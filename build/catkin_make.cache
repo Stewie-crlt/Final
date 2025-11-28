@@ -1,0 +1,2 @@
+rm_control/rm_common:rm_control/rm_control:rm_control/rm_dbus:rm_control/rm_gazebo:rm_control/rm_hw:rm_control/rm_msgs:rm_control/rm_referee:rm_control/rm_vt:rm_description_for_task:rm_template:sentry_chassis_controller:simple_chassis_controller
+-DCATKIN_DEVEL_PREFIX=/home/stewie/RosFinal/devel -DCMAKE_INSTALL_PREFIX=/home/stewie/RosFinal/install -G Unix Makefiles

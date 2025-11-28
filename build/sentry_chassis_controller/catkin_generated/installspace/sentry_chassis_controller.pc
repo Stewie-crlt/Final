@@ -1,0 +1,8 @@
+prefix=/home/stewie/RosFinal/install
+
+Name: sentry_chassis_controller
+Description: Description of sentry_chassis_controller
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: roscpp roslint controller_interface hardware_interface forward_command_controller pluginlib control_toolbox
