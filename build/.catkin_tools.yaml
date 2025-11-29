@@ -1,0 +1,6 @@
+devel_space: /home/stewie/RosFinal/devel
+install: false
+install_space: /home/stewie/RosFinal/install
+profile: default
+source_space: /home/stewie/RosFinal/src
+workspace: /home/stewie/RosFinal

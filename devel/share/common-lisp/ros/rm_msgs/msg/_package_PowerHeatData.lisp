@@ -1,12 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(CHASSIS_POWER_BUFFER-VAL
-          CHASSIS_POWER_BUFFER
-          SHOOTER_ID_1_17_MM_COOLING_HEAT-VAL
-          SHOOTER_ID_1_17_MM_COOLING_HEAT
-          SHOOTER_ID_2_17_MM_COOLING_HEAT-VAL
-          SHOOTER_ID_2_17_MM_COOLING_HEAT
-          SHOOTER_ID_1_42_MM_COOLING_HEAT-VAL
-          SHOOTER_ID_1_42_MM_COOLING_HEAT
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_PowerHeatData.lisp

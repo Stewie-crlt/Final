@@ -1,10 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(FLAG-VAL
-          FLAG
-          SHAPE-VAL
-          SHAPE
-          MIDDLE_POINT-VAL
-          MIDDLE_POINT
-          POSE-VAL
-          POSE
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_ExchangerMsg.lisp

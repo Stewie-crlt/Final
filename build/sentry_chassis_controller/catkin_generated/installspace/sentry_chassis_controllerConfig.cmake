@@ -68,7 +68,7 @@ set(sentry_chassis_controller_CONFIG_INCLUDED TRUE)
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
   set(sentry_chassis_controller_SOURCE_PREFIX /home/stewie/RosFinal/src/sentry_chassis_controller)
-  set(sentry_chassis_controller_DEVEL_PREFIX /home/stewie/RosFinal/devel)
+  set(sentry_chassis_controller_DEVEL_PREFIX /home/stewie/RosFinal/devel/.private/sentry_chassis_controller)
   set(sentry_chassis_controller_INSTALL_PREFIX "")
   set(sentry_chassis_controller_PREFIX ${sentry_chassis_controller_DEVEL_PREFIX})
 else()
@@ -116,7 +116,7 @@ if(NOT "include " STREQUAL " ")
   endforeach()
 endif()
 
-set(libraries "")
+set(libraries "sentry_chassis_controller")
 foreach(library ${libraries})
   # keep build configuration keywords, generator expressions, target names, and absolute libraries as-is
   if("${library}" MATCHES "^(debug|optimized|general)$")
@@ -156,7 +156,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/stewie/RosFinal/install/lib;/opt/ros/noetic/lib)
+    foreach(path /home/stewie/RosFinal/install/lib;/home/stewie/RosFinal/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -179,7 +179,7 @@ foreach(library ${libraries})
   endif()
 endforeach()
 
-set(sentry_chassis_controller_EXPORTED_TARGETS "")
+set(sentry_chassis_controller_EXPORTED_TARGETS "sentry_chassis_controller_generate_messages_cpp;sentry_chassis_controller_generate_messages_eus;sentry_chassis_controller_generate_messages_lisp;sentry_chassis_controller_generate_messages_nodejs;sentry_chassis_controller_generate_messages_py")
 # create dummy targets for exported code generation targets to make life of users easier
 foreach(t ${sentry_chassis_controller_EXPORTED_TARGETS})
   if(NOT TARGET ${t})
@@ -187,7 +187,7 @@ foreach(t ${sentry_chassis_controller_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "roscpp;roslint;controller_interface;hardware_interface;forward_command_controller;pluginlib;control_toolbox")
+set(depends "roscpp;roslint;controller_interface;hardware_interface;forward_command_controller;pluginlib;control_toolbox;std_msgs;message_runtime;geometry_msgs;nav_msgs;tf")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls
@@ -216,7 +216,7 @@ foreach(depend ${depends})
   _list_append_deduplicate(sentry_chassis_controller_EXPORTED_TARGETS ${${sentry_chassis_controller_dep}_EXPORTED_TARGETS})
 endforeach()
 
-set(pkg_cfg_extras "")
+set(pkg_cfg_extras "sentry_chassis_controller-msg-extras.cmake")
 foreach(extra ${pkg_cfg_extras})
   if(NOT IS_ABSOLUTE ${extra})
     set(extra ${sentry_chassis_controller_DIR}/${extra})

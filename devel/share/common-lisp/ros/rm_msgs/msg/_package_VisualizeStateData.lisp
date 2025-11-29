@@ -1,4 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(STATE-VAL
-          STATE
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_VisualizeStateData.lisp

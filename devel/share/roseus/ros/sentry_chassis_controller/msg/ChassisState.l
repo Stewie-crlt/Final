@@ -1,0 +1,1 @@
+/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/share/roseus/ros/sentry_chassis_controller/msg/ChassisState.l

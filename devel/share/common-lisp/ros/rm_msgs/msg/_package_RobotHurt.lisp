@@ -1,8 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(ARMOR_ID-VAL
-          ARMOR_ID
-          HURT_TYPE-VAL
-          HURT_TYPE
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_RobotHurt.lisp

@@ -1,12 +1,9 @@
 <library path="lib/libsentry_chassis_controller">
-
   <class name="sentry_chassis_controller/SentryChassisController"
          type="sentry_chassis_controller::SentryChassisController"
          base_class_type="controller_interface::ControllerBase">
     <description>
-      The SimpleChassisController is RoboMaster standard robot Chassis controller. It expects a EffortJointInterface
-      type of hardware interface.
+      The SentryChassisController is a chassis controller for RoboMaster sentry robot.
     </description>
   </class>
-
 </library>

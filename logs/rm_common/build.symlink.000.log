@@ -1,0 +1,5 @@
+Symlinking /home/stewie/RosFinal/devel/share/rm_common/cmake/rm_commonConfig-version.cmake
+Symlinking /home/stewie/RosFinal/devel/share/rm_common/cmake/rm_commonConfig.cmake
+Symlinking /home/stewie/RosFinal/devel/lib/librm_common.so
+Symlinking /home/stewie/RosFinal/devel/lib/rm_common/test_kalman
+Symlinking /home/stewie/RosFinal/devel/lib/pkgconfig/rm_common.pc

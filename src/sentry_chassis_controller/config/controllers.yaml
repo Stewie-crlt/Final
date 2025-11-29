@@ -1,7 +1,22 @@
-controller:
-  sentry_chassis_controller:
-    type: sentry_chassis_controller/SentryChassisController
+sentry_chassis_controller:
+  type: sentry_chassis_controller/SentryChassisController
+  wheel_track: 0.362
+  wheel_base: 0.362
+  wheel_radius: 0.076
+  cmd_vel_timeout: 0.5
+  max_wheel_speed: 10.0
+  debug_print: true
+  pivot_p: 5.0
+  pivot_i: 0.0
+  pivot_d: 0.1
+  wheel_p: 2.0
+  wheel_i: 0.1
+  wheel_d: 0.0
+  publish_odom: true
+  publish_tf: true
+  odom_frame_id: "odom"
+  base_frame_id: "base_link"
 
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 50
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50

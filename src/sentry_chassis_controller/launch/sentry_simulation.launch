@@ -1,0 +1,40 @@
+<launch>
+    <!-- 仿真参数 -->
+    <arg name="paused" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="roller_type" default="realistic"/>
+    
+    <!-- 1. 启动 Gazebo 仿真环境 -->
+    <include file="$(find rm_description)/launch/sentry.launch">
+        <arg name="load_chassis" value="true"/>
+        <arg name="roller_type" value="$(arg roller_type)"/>
+        <arg name="paused" value="$(arg paused)"/>
+    </include>
+
+    <!-- 等待一段时间确保 Gazebo 完全启动 -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find rm_description)/urdf/sentry/sentry.urdf.xacro
+         load_chassis:=true
+         use_simulation:=true roller_type:=$(arg roller_type)
+    "/>
+
+    <!-- 2. 加载控制器配置到正确的命名空间 -->
+    <rosparam file="$(find sentry_chassis_controller)/config/controllers.yaml" command="load"/>
+
+    <!-- 3. 启动控制器管理器并加载控制器 -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          output="screen" ns="/"
+          args="sentry_chassis_controller
+                joint_state_controller
+          "/>
+
+    <!-- 4. 启动机器人状态发布器 -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+        <remap from="/joint_states" to="/joint_states" />
+    </node>
+
+    <!-- 5. 可选：启动 RViz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sentry_chassis_controller)/config/sentry.rviz" 
+          if="$(arg gui)"/>
+
+</launch>

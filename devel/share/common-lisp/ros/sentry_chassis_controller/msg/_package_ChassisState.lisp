@@ -1,0 +1,1 @@
+/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/share/common-lisp/ros/sentry_chassis_controller/msg/_package_ChassisState.lisp

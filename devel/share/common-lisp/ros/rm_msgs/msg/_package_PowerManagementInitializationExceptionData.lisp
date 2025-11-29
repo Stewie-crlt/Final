@@ -1,8 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(ERROR_CODE-VAL
-          ERROR_CODE
-          STRING-VAL
-          STRING
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_PowerManagementInitializationExceptionData.lisp

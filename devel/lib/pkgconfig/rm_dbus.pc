@@ -1,8 +1,1 @@
-prefix=/home/stewie/RosFinal/devel
-
-Name: rm_dbus
-Description: Description of rm_dbus
-Version: 0.1.20
-Cflags: -I/home/stewie/RosFinal/src/rm_control/rm_dbus/include
-Libs: -L${prefix}/lib 
-Requires: roscpp rm_common
+/home/stewie/RosFinal/devel/.private/rm_dbus/lib/pkgconfig/rm_dbus.pc

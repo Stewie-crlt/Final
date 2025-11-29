@@ -1,10 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(ROBOT_ID-VAL
-          ROBOT_ID
-          POSITION_X-VAL
-          POSITION_X
-          POSITION_Y-VAL
-          POSITION_Y
-          ENGINEER_MARKED-VAL
-          ENGINEER_MARKED
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_RadarToSentry.lisp

@@ -1,12 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(BULLET_ALLOWANCE_NUM_17_MM-VAL
-          BULLET_ALLOWANCE_NUM_17_MM
-          BULLET_ALLOWANCE_NUM_42_MM-VAL
-          BULLET_ALLOWANCE_NUM_42_MM
-          COIN_REMAINING_NUM-VAL
-          COIN_REMAINING_NUM
-          PROJECTILE_ALLOWANCE_FORTRESS-VAL
-          PROJECTILE_ALLOWANCE_FORTRESS
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_BulletAllowance.lisp

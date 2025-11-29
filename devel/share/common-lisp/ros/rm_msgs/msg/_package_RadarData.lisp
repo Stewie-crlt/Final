@@ -1,6 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(ROBOT_ID-VAL
-          ROBOT_ID
-          STATE-VAL
-          STATE
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_RadarData.lisp

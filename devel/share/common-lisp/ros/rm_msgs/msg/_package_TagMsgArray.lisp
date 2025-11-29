@@ -1,6 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(HEADER-VAL
-          HEADER
-          TAG_MSGS_ARRAY-VAL
-          TAG_MSGS_ARRAY
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_TagMsgArray.lisp

@@ -1,8 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(HEADER-VAL
-          HEADER
-          IS_RED-VAL
-          IS_RED
-          DETECTIONS-VAL
-          DETECTIONS
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_TargetDetectionArray.lisp

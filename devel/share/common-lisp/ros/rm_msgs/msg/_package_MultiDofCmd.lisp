@@ -1,10 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(STAMP-VAL
-          STAMP
-          MODE-VAL
-          MODE
-          LINEAR-VAL
-          LINEAR
-          ANGULAR-VAL
-          ANGULAR
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_MultiDofCmd.lisp

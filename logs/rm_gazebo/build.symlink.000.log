@@ -1,0 +1,4 @@
+Symlinking /home/stewie/RosFinal/devel/share/rm_gazebo/cmake/rm_gazeboConfig-version.cmake
+Symlinking /home/stewie/RosFinal/devel/share/rm_gazebo/cmake/rm_gazeboConfig.cmake
+Symlinking /home/stewie/RosFinal/devel/lib/librm_robot_hw_sim.so
+Symlinking /home/stewie/RosFinal/devel/lib/pkgconfig/rm_gazebo.pc

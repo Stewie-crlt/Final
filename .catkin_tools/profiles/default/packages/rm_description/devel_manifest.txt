@@ -1,0 +1,4 @@
+rm_description_for_task
+/home/stewie/RosFinal/devel/.private/rm_description/share/rm_description/cmake/rm_descriptionConfig.cmake /home/stewie/RosFinal/devel/share/rm_description/cmake/rm_descriptionConfig.cmake
+/home/stewie/RosFinal/devel/.private/rm_description/share/rm_description/cmake/rm_descriptionConfig-version.cmake /home/stewie/RosFinal/devel/share/rm_description/cmake/rm_descriptionConfig-version.cmake
+/home/stewie/RosFinal/devel/.private/rm_description/lib/pkgconfig/rm_description.pc /home/stewie/RosFinal/devel/lib/pkgconfig/rm_description.pc

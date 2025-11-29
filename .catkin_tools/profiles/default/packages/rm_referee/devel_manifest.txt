@@ -1,0 +1,5 @@
+rm_control/rm_referee
+/home/stewie/RosFinal/devel/.private/rm_referee/share/rm_referee/cmake/rm_refereeConfig-version.cmake /home/stewie/RosFinal/devel/share/rm_referee/cmake/rm_refereeConfig-version.cmake
+/home/stewie/RosFinal/devel/.private/rm_referee/share/rm_referee/cmake/rm_refereeConfig.cmake /home/stewie/RosFinal/devel/share/rm_referee/cmake/rm_refereeConfig.cmake
+/home/stewie/RosFinal/devel/.private/rm_referee/lib/rm_referee/rm_referee /home/stewie/RosFinal/devel/lib/rm_referee/rm_referee
+/home/stewie/RosFinal/devel/.private/rm_referee/lib/pkgconfig/rm_referee.pc /home/stewie/RosFinal/devel/lib/pkgconfig/rm_referee.pc

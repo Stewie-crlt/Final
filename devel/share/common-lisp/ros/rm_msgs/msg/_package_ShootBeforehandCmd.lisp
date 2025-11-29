@@ -1,6 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(CMD-VAL
-          CMD
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_ShootBeforehandCmd.lisp

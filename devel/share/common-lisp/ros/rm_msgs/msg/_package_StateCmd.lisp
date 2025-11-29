@@ -1,8 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(MODE-VAL
-          MODE
-          DATA-VAL
-          DATA
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_StateCmd.lisp

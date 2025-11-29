@@ -1,0 +1,2 @@
+set(sentry_chassis_controller_MESSAGE_FILES "/home/stewie/RosFinal/src/sentry_chassis_controller/msg/ChassisState.msg")
+set(sentry_chassis_controller_SERVICE_FILES "")

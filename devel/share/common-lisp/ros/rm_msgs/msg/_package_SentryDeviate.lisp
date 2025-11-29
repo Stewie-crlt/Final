@@ -1,8 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(DEVIATE_X-VAL
-          DEVIATE_X
-          DEVIATE_Y-VAL
-          DEVIATE_Y
-          ISDEVIATE-VAL
-          ISDEVIATE
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_SentryDeviate.lisp

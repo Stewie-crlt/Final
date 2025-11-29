@@ -1,8 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(ACTION_GOAL-VAL
-          ACTION_GOAL
-          ACTION_RESULT-VAL
-          ACTION_RESULT
-          ACTION_FEEDBACK-VAL
-          ACTION_FEEDBACK
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_EngineerAction.lisp

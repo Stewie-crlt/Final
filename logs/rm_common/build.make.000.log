@@ -1,0 +1,15 @@
+[35m[1mScanning dependencies of target rm_msgs_generate_messages_cpp[0m
+[  0%] Built target rm_msgs_generate_messages_cpp
+[35m[1mScanning dependencies of target rm_common[0m
+[ 11%] [32mBuilding CXX object CMakeFiles/rm_common.dir/src/filter/filters.cpp.o[0m
+[ 22%] [32mBuilding CXX object CMakeFiles/rm_common.dir/src/filter/imu_complementary_filter.cpp.o[0m
+[ 33%] [32mBuilding CXX object CMakeFiles/rm_common.dir/src/filter/imu_filter_base.cpp.o[0m
+[ 44%] [32mBuilding CXX object CMakeFiles/rm_common.dir/src/filter/lp_filter.cpp.o[0m
+[ 55%] [32mBuilding CXX object CMakeFiles/rm_common.dir/src/ori_tool.cpp.o[0m
+[ 66%] [32mBuilding CXX object CMakeFiles/rm_common.dir/src/tf_rt_broadcaster.cpp.o[0m
+[ 77%] [32m[1mLinking CXX shared library /home/stewie/RosFinal/devel/.private/rm_common/lib/librm_common.so[0m
+[ 77%] Built target rm_common
+[35m[1mScanning dependencies of target test_kalman[0m
+[ 88%] [32mBuilding CXX object CMakeFiles/test_kalman.dir/test/test_kalman_filter.cpp.o[0m
+[100%] [32m[1mLinking CXX executable /home/stewie/RosFinal/devel/.private/rm_common/lib/rm_common/test_kalman[0m
+[100%] Built target test_kalman

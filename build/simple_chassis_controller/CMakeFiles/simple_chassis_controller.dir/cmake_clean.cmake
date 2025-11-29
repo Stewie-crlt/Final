@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/lib/libsimple_chassis_controller.pdb"
-  "/home/stewie/RosFinal/devel/lib/libsimple_chassis_controller.so"
+  "/home/stewie/RosFinal/devel/.private/simple_chassis_controller/lib/libsimple_chassis_controller.pdb"
+  "/home/stewie/RosFinal/devel/.private/simple_chassis_controller/lib/libsimple_chassis_controller.so"
   "CMakeFiles/simple_chassis_controller.dir/src/simple_chassis_controller.cpp.o"
 )
 

@@ -1,14 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(CHASSIS_POWER-VAL
-          CHASSIS_POWER
-          EXPECT_POWER-VAL
-          EXPECT_POWER
-          CAPACITY_EXPECT_CHARGE_POWER-VAL
-          CAPACITY_EXPECT_CHARGE_POWER
-          CAPACITY_RECENT_CHARGE_POWER-VAL
-          CAPACITY_RECENT_CHARGE_POWER
-          CAP_POWER-VAL
-          CAP_POWER
-          STAMP-VAL
-          STAMP
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_CapacityData.lisp

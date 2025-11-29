@@ -1,12 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(HEADER-VAL
-          HEADER
-          REAL_DETECTION_POSE-VAL
-          REAL_DETECTION_POSE
-          FILTERED_DETECTION_POSE-VAL
-          FILTERED_DETECTION_POSE
-          REAL_DETECTION_TWIST-VAL
-          REAL_DETECTION_TWIST
-          FILTERED_DETECTION_TWIST-VAL
-          FILTERED_DETECTION_TWIST
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_KalmanData.lisp

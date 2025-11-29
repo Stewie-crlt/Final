@@ -1,12 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(TARGET_POSITION_X-VAL
-          TARGET_POSITION_X
-          TARGET_POSITION_Y-VAL
-          TARGET_POSITION_Y
-          COMMAND_KEYBOARD-VAL
-          COMMAND_KEYBOARD
-          TARGET_ROBOT_ID-VAL
-          TARGET_ROBOT_ID
-          CMD_SOURCE-VAL
-          CMD_SOURCE
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_ClientMapSendData.lisp

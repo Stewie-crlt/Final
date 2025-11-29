@@ -4,5 +4,5 @@ Name: sentry_chassis_controller
 Description: Description of sentry_chassis_controller
 Version: 0.0.0
 Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: roscpp roslint controller_interface hardware_interface forward_command_controller pluginlib control_toolbox
+Libs: -L${prefix}/lib -lsentry_chassis_controller
+Requires: roscpp roslint controller_interface hardware_interface forward_command_controller pluginlib control_toolbox std_msgs message_runtime geometry_msgs nav_msgs tf

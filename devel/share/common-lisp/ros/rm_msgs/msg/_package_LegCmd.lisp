@@ -1,6 +1,1 @@
-(cl:in-package rm_msgs-msg)
-(cl:export '(JUMP-VAL
-          JUMP
-          LEG_LENGTH-VAL
-          LEG_LENGTH
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/msg/_package_LegCmd.lisp

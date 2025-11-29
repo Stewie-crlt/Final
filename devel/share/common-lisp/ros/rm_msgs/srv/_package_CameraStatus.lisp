@@ -1,6 +1,1 @@
-(cl:in-package rm_msgs-srv)
-(cl:export '(IMU_REQUEST-VAL
-          IMU_REQUEST
-          IS_OPEN-VAL
-          IS_OPEN
-))
+/home/stewie/RosFinal/devel/.private/rm_msgs/share/common-lisp/ros/rm_msgs/srv/_package_CameraStatus.lisp
