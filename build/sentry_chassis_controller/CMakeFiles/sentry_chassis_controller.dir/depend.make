@@ -30,6 +30,7 @@ CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /o
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/dynamic_reconfigure/config_tools.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/dynamic_reconfigure/server.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/geometry_msgs/Point.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/geometry_msgs/Point32.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/geometry_msgs/PointStamped.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/geometry_msgs/Pose.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/geometry_msgs/PoseStamped.h
@@ -61,6 +62,8 @@ CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /o
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/advertise_service_options.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/assert.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/builtin_message_traits.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/callback_queue.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/callback_queue_interface.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/common.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/console.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/console_backend.h
@@ -113,7 +116,13 @@ CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /o
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/wall_timer.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/ros/wall_timer_options.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/rosconsole/macros_generated.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/sensor_msgs/ChannelFloat32.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/sensor_msgs/PointCloud.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/std_msgs/Empty.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/std_msgs/Header.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/FrameGraph.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/FrameGraphRequest.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/FrameGraphResponse.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/LinearMath/Matrix3x3.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/LinearMath/MinMax.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/LinearMath/QuadWord.h
@@ -127,6 +136,7 @@ CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /o
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/time_cache.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/transform_broadcaster.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/transform_datatypes.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf/transform_listener.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2/LinearMath/Quaternion.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2/LinearMath/Vector3.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2/buffer_core.h
@@ -138,9 +148,11 @@ CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /o
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_msgs/FrameGraph.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_msgs/FrameGraphRequest.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_msgs/FrameGraphResponse.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_msgs/TFMessage.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_ros/buffer.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_ros/buffer_interface.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_ros/transform_broadcaster.h
+CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/tf2_ros/transform_listener.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/xmlrpcpp/XmlRpcDecl.h
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o: /opt/ros/noetic/include/xmlrpcpp/XmlRpcValue.h
 

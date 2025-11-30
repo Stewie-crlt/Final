@@ -16,6 +16,10 @@ sentry_chassis_controller:
   publish_tf: true
   odom_frame_id: "odom"
   base_frame_id: "base_link"
+  
+  # 新增：世界坐标系速度控制参数
+  world_vel_mode: false      # true: 全局坐标系速度模式, false: 底盘坐标系速度模式
+  world_frame_id: "odom"     # 世界坐标系的frame_id ("odom" 或 "map")
 
 joint_state_controller:
   type: joint_state_controller/JointStateController

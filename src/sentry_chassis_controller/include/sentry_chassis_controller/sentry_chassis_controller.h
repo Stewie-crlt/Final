@@ -8,6 +8,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 #include <mutex>
 
 namespace sentry_chassis_controller {
@@ -29,6 +30,8 @@ class SentryChassisController : public controller_interface::Controller<hardware
   void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg);
   void computeWheelCommands(double vx, double vy, double wz);
   void computeOdometry(const ros::Time &time, const ros::Duration &period);
+  bool transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
+                                   geometry_msgs::Twist& base_vel);
   
   hardware_interface::JointHandle front_left_pivot_joint_, front_right_pivot_joint_, back_left_pivot_joint_, back_right_pivot_joint_;
   hardware_interface::JointHandle front_left_wheel_joint_, front_right_wheel_joint_,
@@ -37,6 +40,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   ros::Subscriber cmd_vel_sub_;
   ros::Publisher odom_pub_;
   std::shared_ptr<tf::TransformBroadcaster> tf_broadcaster_;
+  std::unique_ptr<tf::TransformListener> tf_listener_;
   ros::Time last_cmd_vel_time_;
   ros::Time last_odom_time_;
   
@@ -50,6 +54,10 @@ class SentryChassisController : public controller_interface::Controller<hardware
   bool publish_tf_;
   std::string odom_frame_id_;
   std::string base_frame_id_;
+  
+  // 新增：控制模式参数
+  bool world_vel_mode_;  // true: 全局坐标系速度模式, false: 底盘坐标系速度模式
+  std::string world_frame_id_;  // 世界坐标系frame_id (odom/map)
   
   // 当前速度指令
   double vx_, vy_, wz_;

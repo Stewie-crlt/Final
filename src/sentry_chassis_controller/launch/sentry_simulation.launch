@@ -34,7 +34,7 @@
     </node>
 
     <!-- 5. 可选：启动 RViz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sentry_chassis_controller)/config/sentry.rviz" 
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find sentry_chassis_controller)/config/1.rviz" 
           if="$(arg gui)"/>
 
 </launch>

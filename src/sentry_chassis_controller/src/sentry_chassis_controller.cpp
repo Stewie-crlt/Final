@@ -1,6 +1,7 @@
 #include "sentry_chassis_controller/sentry_chassis_controller.h"
 #include <pluginlib/class_list_macros.hpp>
 #include <cmath>
+#include <tf/transform_listener.h>
 
 namespace sentry_chassis_controller {
 
@@ -36,6 +37,10 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   publish_tf_ = controller_nh.param("publish_tf", true);
   odom_frame_id_ = controller_nh.param("odom_frame_id", std::string("odom"));
   base_frame_id_ = controller_nh.param("base_frame_id", std::string("base_link"));
+  
+  // 新增：控制模式参数
+  world_vel_mode_ = controller_nh.param("world_vel_mode", false);
+  world_frame_id_ = controller_nh.param("world_frame_id", std::string("odom"));
 
   // 初始化PID控制器
   // 转向角度PID
@@ -81,6 +86,11 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   vy_actual_ = 0.0;
   wz_actual_ = 0.0;
 
+  // 初始化TF监听器（用于世界坐标系速度模式）
+  if (world_vel_mode_) {
+    tf_listener_.reset(new tf::TransformListener());
+  }
+
   // 订阅cmd_vel话题
   ros::NodeHandle nh;
   cmd_vel_sub_ = nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, 
@@ -96,7 +106,35 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
     tf_broadcaster_.reset(new tf::TransformBroadcaster());
   }
 
+  ROS_INFO("SentryChassisController initialized: world_vel_mode = %s, world_frame = %s", 
+           world_vel_mode_ ? "true" : "false", world_frame_id_.c_str());
+
   return true;
+}
+
+// 新增：将世界坐标系速度转换到底盘坐标系
+bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
+                                                          geometry_msgs::Twist& base_vel) {
+  try {
+    tf::StampedTransform transform;
+    tf_listener_->lookupTransform(world_frame_id_, base_frame_id_, ros::Time(0), transform);
+    
+    // 获取底盘在世界坐标系中的偏航角
+    double yaw = tf::getYaw(transform.getRotation());
+    
+    // 线速度变换：世界坐标系 -> 底盘坐标系
+    base_vel.linear.x = world_vel.linear.x * cos(yaw) + world_vel.linear.y * sin(yaw);
+    base_vel.linear.y = -world_vel.linear.x * sin(yaw) + world_vel.linear.y * cos(yaw);
+    
+    // 角速度在z轴方向不变（假设世界坐标系和底盘坐标系的z轴平行）
+    base_vel.angular.z = world_vel.angular.z;
+    
+    return true;
+  }
+  catch (tf::TransformException &ex) {
+    ROS_WARN_THROTTLE(1.0, "TF transform failed: %s", ex.what());
+    return false;
+  }
 }
 
 void SentryChassisController::starting(const ros::Time& time) {
@@ -124,10 +162,30 @@ void SentryChassisController::stopping(const ros::Time& time) {
 
 void SentryChassisController::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
   std::lock_guard<std::mutex> lock(cmd_vel_mutex_);
-  vx_ = msg->linear.x;
-  vy_ = msg->linear.y;
-  wz_ = msg->angular.z;
+  
+  if (world_vel_mode_) {
+    // 世界坐标系速度模式：直接存储世界坐标系速度
+    vx_ = msg->linear.x;
+    vy_ = msg->linear.y;
+    wz_ = msg->angular.z;
+  } else {
+    // 底盘坐标系速度模式：直接使用指令速度
+    vx_ = msg->linear.x;
+    vy_ = msg->linear.y;
+    wz_ = msg->angular.z;
+  }
+  
   last_cmd_vel_time_ = ros::Time::now();
+  
+  if (debug_print_) {
+    if (world_vel_mode_) {
+      ROS_INFO_THROTTLE(1.0, "Received world velocity command: vx=%.2f, vy=%.2f, wz=%.2f", 
+                       vx_, vy_, wz_);
+    } else {
+      ROS_INFO_THROTTLE(1.0, "Received base velocity command: vx=%.2f, vy=%.2f, wz=%.2f", 
+                       vx_, vy_, wz_);
+    }
+  }
 }
 
 void SentryChassisController::computeWheelCommands(double vx, double vy, double wz) {
@@ -366,9 +424,43 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
   double vx, vy, wz;
   {
     std::lock_guard<std::mutex> lock(cmd_vel_mutex_);
-    vx = cmd_vel_active ? vx_ : 0.0;
-    vy = cmd_vel_active ? vy_ : 0.0;
-    wz = cmd_vel_active ? wz_ : 0.0;
+    
+    if (cmd_vel_active) {
+      if (world_vel_mode_) {
+        // 世界坐标系速度模式：需要转换到底盘坐标系
+        geometry_msgs::Twist world_vel, base_vel;
+        world_vel.linear.x = vx_;
+        world_vel.linear.y = vy_;
+        world_vel.angular.z = wz_;
+        
+        if (transformVelocityToBaseFrame(world_vel, base_vel)) {
+          vx = base_vel.linear.x;
+          vy = base_vel.linear.y;
+          wz = base_vel.angular.z;
+          
+          if (debug_print_) {
+            ROS_INFO_THROTTLE(2.0, "Transformed velocity - World(%.2f,%.2f,%.2f) -> Base(%.2f,%.2f,%.2f)", 
+                             vx_, vy_, wz_, vx, vy, wz);
+          }
+        } else {
+          // TF变换失败，使用零速度
+          vx = 0.0;
+          vy = 0.0;
+          wz = 0.0;
+          ROS_WARN_THROTTLE(1.0, "TF transform failed, using zero velocity");
+        }
+      } else {
+        // 底盘坐标系速度模式：直接使用指令速度
+        vx = vx_;
+        vy = vy_;
+        wz = wz_;
+      }
+    } else {
+      // 指令超时，使用零速度
+      vx = 0.0;
+      vy = 0.0;
+      wz = 0.0;
+    }
   }
   
   // 使用逆运动学计算轮子命令

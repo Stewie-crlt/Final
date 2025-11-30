@@ -35,8 +35,6 @@
   <build_export_depend>nav_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
 
-
-
   <exec_depend>control_toolbox</exec_depend>
   <exec_depend>controller_interface</exec_depend>
   <exec_depend>forward_command_controller</exec_depend>
