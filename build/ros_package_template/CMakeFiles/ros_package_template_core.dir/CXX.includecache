@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/stewie/RosFinal/src/rm_template/include/ros_package_template/Algorithm.hpp
+/home/stewie/Final/src/rm_template/include/ros_package_template/Algorithm.hpp
 memory
 -
 Eigen/Core
 -
 
-/home/stewie/RosFinal/src/rm_template/src/Algorithm.cpp
+/home/stewie/Final/src/rm_template/src/Algorithm.cpp
 ros_package_template/Algorithm.hpp
-/home/stewie/RosFinal/src/rm_template/src/ros_package_template/Algorithm.hpp
+/home/stewie/Final/src/rm_template/src/ros_package_template/Algorithm.hpp
 utility
 -
 boost/accumulators/accumulators.hpp

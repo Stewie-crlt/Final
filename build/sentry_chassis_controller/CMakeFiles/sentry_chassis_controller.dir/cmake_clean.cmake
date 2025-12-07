@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/lib/libsentry_chassis_controller.pdb"
-  "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/lib/libsentry_chassis_controller.so"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/lib/libsentry_chassis_controller.pdb"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/lib/libsentry_chassis_controller.so"
   "CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o"
 )
 

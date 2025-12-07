@@ -29,7 +29,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   // 获取参数
   wheel_track_ = controller_nh.param("wheel_track", 0.362);
   wheel_base_ = controller_nh.param("wheel_base", 0.362);
-  wheel_radius_ = controller_nh.param("wheel_radius", 0.076);
+  wheel_radius_ = controller_nh.param("wheel_radius", 0.07625);
   cmd_vel_timeout_ = controller_nh.param("cmd_vel_timeout", 0.5);
   max_wheel_speed_ = controller_nh.param("max_wheel_speed", 10.0); // rad/s
   debug_print_ = controller_nh.param("debug_print", false);
@@ -41,6 +41,17 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   // 新增：控制模式参数
   world_vel_mode_ = controller_nh.param("world_vel_mode", false);
   world_frame_id_ = controller_nh.param("world_frame_id", std::string("odom"));
+
+  // 新增：自锁功能参数
+  enable_lock_mode_ = controller_nh.param("enable_lock_mode", true);
+  lock_timeout_ = controller_nh.param("lock_timeout", 1.0);
+  lock_angle_f = controller_nh.param("lock_angle", 0.785);
+  lock_angle_b = controller_nh.param("lock_angle", 2.355); // 45度，单位弧度
+  is_locked_ = false;
+
+  // 新增：路程发布参数
+  bool publish_distance = controller_nh.param("publish_distance", true);
+  std::string distance_topic = controller_nh.param("distance_topic", std::string("total_distance"));
 
   // 初始化PID控制器
   // 转向角度PID
@@ -85,6 +96,9 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   vx_actual_ = 0.0;
   vy_actual_ = 0.0;
   wz_actual_ = 0.0;
+  
+  // 新增：初始化总路程
+  total_distance_ = 0.0;
 
   // 初始化TF监听器（用于世界坐标系速度模式）
   if (world_vel_mode_) {
@@ -101,20 +115,28 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
     odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 50);
   }
 
+  // 新增：发布路程话题
+  if (publish_distance) {
+    distance_pub_ = nh.advertise<std_msgs::Float32>(distance_topic, 10);
+  }
+
   // 初始化TF广播器
   if (publish_tf_) {
     tf_broadcaster_.reset(new tf::TransformBroadcaster());
   }
 
-  ROS_INFO("SentryChassisController initialized: world_vel_mode = %s, world_frame = %s", 
-           world_vel_mode_ ? "true" : "false", world_frame_id_.c_str());
+  ROS_INFO("SentryChassisController initialized: world_vel_mode = %s, enable_lock_mode = %s, lock_anglef = %.2f rad, lock_angleb = %.2f rad", 
+           world_vel_mode_ ? "true" : "false", 
+           enable_lock_mode_ ? "true" : "false",
+           lock_angle_f,lock_angle_b);
+  ROS_INFO("Distance tracking: %s", publish_distance ? "enabled" : "disabled");
 
   return true;
 }
 
 // 新增：将世界坐标系速度转换到底盘坐标系
-bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
-                                                          geometry_msgs::Twist& base_vel) {
+bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel,
+                                                           geometry_msgs::Twist& base_vel) {
   try {
     tf::StampedTransform transform;
     tf_listener_->lookupTransform(world_frame_id_, base_frame_id_, ros::Time(0), transform);
@@ -137,6 +159,61 @@ bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::
   }
 }
 
+// 新增：设置自锁模式
+void SentryChassisController::setLockMode(bool enable) {
+  if (enable == is_locked_) {
+    return; // 状态相同，无需改变
+  }
+  
+  if (enable) {
+    // 进入自锁模式
+    ROS_INFO("Entering lock mode");
+    
+    // 设置轮子转向自锁角度
+    // 左侧轮子：lock_angle（正角度，向外）
+    // 右侧轮子：-lock_angle（负角度，向外）
+    // 这样所有轮子都向外转，形成自锁
+    pivot_cmd_[0] = lock_angle_f;      // 左前：向外转
+    pivot_cmd_[1] = -lock_angle_f;     // 右前：向外转  
+    pivot_cmd_[2] = -lock_angle_f;      // 左后：向外转
+    pivot_cmd_[3] = lock_angle_f;     // 右后：向外转
+    
+    // 所有轮子速度设为0
+    for (int i = 0; i < 4; ++i) {
+      wheel_cmd_[i] = 0.0;
+      last_valid_pivot_cmd_[i] = pivot_cmd_[i];
+    }
+    
+    // 重置PID控制器，避免积分项累积
+    pid_lf_.reset();
+    pid_rf_.reset();
+    pid_lb_.reset();
+    pid_rb_.reset();
+    pid_lf_wheel_.reset();
+    pid_rf_wheel_.reset();
+    pid_lb_wheel_.reset();
+    pid_rb_wheel_.reset();
+    
+    is_locked_ = true;
+    
+    if (debug_print_) {
+      ROS_INFO("Lock mode activated: angles = [%.2f, %.2f, %.2f, %.2f] rad", 
+               pivot_cmd_[0], pivot_cmd_[1], pivot_cmd_[2], pivot_cmd_[3]);
+    }
+  } else {
+    // 退出自锁模式
+    ROS_INFO("Exiting lock mode");
+    
+    // 重置PID控制器
+    pid_lf_.reset();
+    pid_rf_.reset();
+    pid_lb_.reset();
+    pid_rb_.reset();
+    
+    is_locked_ = false;
+  }
+}
+
 void SentryChassisController::starting(const ros::Time& time) {
   // 重置PID控制器
   pid_lf_.reset();
@@ -150,18 +227,46 @@ void SentryChassisController::starting(const ros::Time& time) {
   
   last_cmd_vel_time_ = time;
   last_odom_time_ = time;
+  
+  // 初始化为非自锁状态
+  is_locked_ = false;
+  
+  // 重置总路程
+  total_distance_ = 0.0;
+  
+  ROS_INFO("SentryChassisController started. Total distance reset to 0.");
 }
 
 void SentryChassisController::stopping(const ros::Time& time) {
-  // 停止时设置所有轮子速度为0
-  front_left_wheel_joint_.setCommand(0.0);
-  front_right_wheel_joint_.setCommand(0.0);
-  back_left_wheel_joint_.setCommand(0.0);
-  back_right_wheel_joint_.setCommand(0.0);
+  // 停止时进入自锁模式
+  if (enable_lock_mode_) {
+    setLockMode(true);
+    
+    // 设置所有轮子速度为0
+    front_left_wheel_joint_.setCommand(0.0);
+    front_right_wheel_joint_.setCommand(0.0);
+    back_left_wheel_joint_.setCommand(0.0);
+    back_right_wheel_joint_.setCommand(0.0);
+    
+    ROS_INFO("Controller stopping. Final total distance: %.3f meters", total_distance_);
+  } else {
+    // 停止时设置所有轮子速度为0
+    front_left_wheel_joint_.setCommand(0.0);
+    front_right_wheel_joint_.setCommand(0.0);
+    back_left_wheel_joint_.setCommand(0.0);
+    back_right_wheel_joint_.setCommand(0.0);
+    
+    ROS_INFO("Controller stopping. Final total distance: %.3f meters", total_distance_);
+  }
 }
 
 void SentryChassisController::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
   std::lock_guard<std::mutex> lock(cmd_vel_mutex_);
+  
+  // 如果当前处于自锁模式，收到速度命令时退出自锁模式
+  if (is_locked_) {
+    setLockMode(false);
+  }
   
   if (world_vel_mode_) {
     // 世界坐标系速度模式：直接存储世界坐标系速度
@@ -369,9 +474,20 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     double world_vx = vx_actual_ * cos(theta_) - vy_actual_ * sin(theta_);
     double world_vy = vx_actual_ * sin(theta_) + vy_actual_ * cos(theta_);
     
-    // 更新位置
+    // 更新位置（位移）
     x_ += world_vx * dt;
     y_ += world_vy * dt;
+    
+    // 新增：计算并累加路程
+    double instant_speed = sqrt(world_vx * world_vx + world_vy * world_vy);
+    total_distance_ += instant_speed * dt;
+    
+    // 调试输出：每5秒打印一次总路程
+    static ros::Time last_distance_print = time;
+    if ((time - last_distance_print).toSec() > 5.0) {
+      ROS_INFO_THROTTLE(5.0, "Total distance traveled: %.3f meters", total_distance_);
+      last_distance_print = time;
+    }
   }
   
   // 发布里程计消息
@@ -399,6 +515,13 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     odom_pub_.publish(odom);
   }
   
+  // 新增：发布路程消息
+  if (distance_pub_.getNumSubscribers() > 0) {
+    std_msgs::Float32 distance_msg;
+    distance_msg.data = total_distance_;
+    distance_pub_.publish(distance_msg);
+  }
+  
   // 发布TF变换
   if (publish_tf_ && tf_broadcaster_) {
     geometry_msgs::TransformStamped odom_trans;
@@ -421,11 +544,20 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
   // 检查指令超时
   bool cmd_vel_active = (time - last_cmd_vel_time_).toSec() < cmd_vel_timeout_;
   
+  // 检查是否应该进入自锁模式
+  if (enable_lock_mode_) {
+    bool should_lock = (time - last_cmd_vel_time_).toSec() > lock_timeout_;
+    if (should_lock && !is_locked_) {
+      setLockMode(true);
+    }
+  }
+  
   double vx, vy, wz;
   {
     std::lock_guard<std::mutex> lock(cmd_vel_mutex_);
     
-    if (cmd_vel_active) {
+    if (cmd_vel_active && !is_locked_) {
+      // 如果指令有效且不在自锁模式
       if (world_vel_mode_) {
         // 世界坐标系速度模式：需要转换到底盘坐标系
         geometry_msgs::Twist world_vel, base_vel;
@@ -455,16 +587,27 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
         vy = vy_;
         wz = wz_;
       }
+    } else if (is_locked_) {
+      // 自锁模式下，速度设为0
+      vx = 0.0;
+      vy = 0.0;
+      wz = 0.0;
+      
+      // 自锁模式下不重新计算轮子命令，保持自锁角度
+      // 直接使用setLockMode设置的角度
     } else {
-      // 指令超时，使用零速度
+      // 指令超时但未进入自锁模式，使用零速度
       vx = 0.0;
       vy = 0.0;
       wz = 0.0;
     }
   }
   
-  // 使用逆运动学计算轮子命令
-  computeWheelCommands(vx, vy, wz);
+  // 只有在非自锁模式下才重新计算轮子命令
+  if (!is_locked_) {
+    // 使用逆运动学计算轮子命令
+    computeWheelCommands(vx, vy, wz);
+  }
   
   // 控制轮子速度
   front_left_wheel_joint_.setCommand(

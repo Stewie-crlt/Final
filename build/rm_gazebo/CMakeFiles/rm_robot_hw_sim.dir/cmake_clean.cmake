@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/rm_gazebo/lib/librm_robot_hw_sim.pdb"
-  "/home/stewie/RosFinal/devel/.private/rm_gazebo/lib/librm_robot_hw_sim.so"
+  "/home/stewie/Final/devel/.private/rm_gazebo/lib/librm_robot_hw_sim.pdb"
+  "/home/stewie/Final/devel/.private/rm_gazebo/lib/librm_robot_hw_sim.so"
   "CMakeFiles/rm_robot_hw_sim.dir/src/rm_robot_hw_sim.cpp.o"
 )
 

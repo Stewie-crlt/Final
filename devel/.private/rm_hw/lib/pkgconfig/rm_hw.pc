@@ -1,8 +1,8 @@
-prefix=/home/stewie/RosFinal/devel/.private/rm_hw
+prefix=/home/stewie/Final/devel/.private/rm_hw
 
 Name: rm_hw
 Description: Description of rm_hw
 Version: 0.1.20
-Cflags: -I/home/stewie/RosFinal/src/rm_control/rm_hw/include
+Cflags: -I/home/stewie/Final/src/rm_control/rm_hw/include
 Libs: -L${prefix}/lib -lrm_hw_loader_plugins
 Requires: roscpp rm_common rm_msgs hardware_interface controller_interface transmission_interface joint_limits_interface controller_manager urdf realtime_tools

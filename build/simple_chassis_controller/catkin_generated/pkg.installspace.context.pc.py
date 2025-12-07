@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "${prefix}/include".split(';') if "${prefix}/i
 PROJECT_CATKIN_DEPENDS = "roscpp;roslint;controller_interface;hardware_interface;forward_command_controller;pluginlib;control_toolbox".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "simple_chassis_controller"
-PROJECT_SPACE_DIR = "/home/stewie/RosFinal/install"
+PROJECT_SPACE_DIR = "/home/stewie/Final/install"
 PROJECT_VERSION = "0.1.0"

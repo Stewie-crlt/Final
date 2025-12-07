@@ -20,6 +20,15 @@ sentry_chassis_controller:
   # 新增：世界坐标系速度控制参数
   world_vel_mode: false      # true: 全局坐标系速度模式, false: 底盘坐标系速度模式
   world_frame_id: "odom"     # 世界坐标系的frame_id ("odom" 或 "map")
+  
+  # 新增：自锁功能参数
+  enable_lock_mode: true     # 启用自锁功能
+  lock_timeout: 1.0          # 1秒后进入自锁模式
+  lock_angle: 0.785          # 自锁角度，45度（弧度）
+  
+  # 新增：路程发布参数
+  publish_distance: true     # 是否发布总路程
+  distance_topic: "total_distance"  # 路程话题名称
 
 joint_state_controller:
   type: joint_state_controller/JointStateController

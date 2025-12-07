@@ -1,0 +1,15 @@
+Symlinking /home/stewie/Final/devel/share/ros_package_template/cmake/ros_package_templateConfig-version.cmake
+Symlinking /home/stewie/Final/devel/share/ros_package_template/cmake/ros_package_templateConfig.cmake
+Symlinking /home/stewie/Final/devel/lib/libros_package_template_core.so
+Symlinking /home/stewie/Final/devel/lib/ros_package_template/ros_package_template
+Symlinking /home/stewie/Final/devel/lib/pkgconfig/ros_package_template.pc
+Cleaning: (/home/stewie/RosFinal/devel/.private/ros_package_template/share/ros_package_template/cmake/ros_package_templateConfig-version.cmake, /home/stewie/RosFinal/devel/share/ros_package_template/cmake/ros_package_templateConfig-version.cmake)
+Cleaning: (/home/stewie/RosFinal/devel/.private/ros_package_template/share/ros_package_template/cmake/ros_package_templateConfig.cmake, /home/stewie/RosFinal/devel/share/ros_package_template/cmake/ros_package_templateConfig.cmake)
+Cleaning: (/home/stewie/RosFinal/devel/.private/ros_package_template/lib/libros_package_template_core.so, /home/stewie/RosFinal/devel/lib/libros_package_template_core.so)
+Cleaning: (/home/stewie/RosFinal/devel/.private/ros_package_template/lib/ros_package_template/ros_package_template, /home/stewie/RosFinal/devel/lib/ros_package_template/ros_package_template)
+Cleaning: (/home/stewie/RosFinal/devel/.private/ros_package_template/lib/pkgconfig/ros_package_template.pc, /home/stewie/RosFinal/devel/lib/pkgconfig/ros_package_template.pc)
+Unlinking: /home/stewie/RosFinal/devel/share/ros_package_template/cmake/ros_package_templateConfig-version.cmake
+Unlinking: /home/stewie/RosFinal/devel/share/ros_package_template/cmake/ros_package_templateConfig.cmake
+Unlinking: /home/stewie/RosFinal/devel/lib/libros_package_template_core.so
+Unlinking: /home/stewie/RosFinal/devel/lib/ros_package_template/ros_package_template
+Unlinking: /home/stewie/RosFinal/devel/lib/pkgconfig/ros_package_template.pc

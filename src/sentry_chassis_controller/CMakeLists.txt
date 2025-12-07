@@ -8,6 +8,7 @@ add_definitions(-Wall -Werror)
 find_package(catkin REQUIRED
     COMPONENTS
     roscpp
+    dynamic_reconfigure
     roslint
     controller_interface
     hardware_interface
@@ -20,6 +21,8 @@ find_package(catkin REQUIRED
     nav_msgs
     tf
 )
+
+
 
 # 添加消息生成
 add_message_files(
@@ -39,6 +42,7 @@ catkin_package(
     ${PROJECT_NAME}
     CATKIN_DEPENDS
     roscpp
+    dynamic_reconfigure
     roslint
     controller_interface
     hardware_interface
@@ -62,14 +66,21 @@ add_library(${PROJECT_NAME}
     src/sentry_chassis_controller.cpp
 )
 
-add_dependencies(${PROJECT_NAME}
-    ${catkin_EXPORTED_TARGETS}
-    ${PROJECT_NAME}_generate_messages_cpp
-)
+
 
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
 )
+
+# 添加 teleop_keyboard 可执行文件
+add_executable(teleop_keyboard src/teleop_keyboard.cpp)
+add_dependencies(teleop_keyboard ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(teleop_keyboard ${catkin_LIBRARIES})
+
+install(TARGETS teleop_keyboard
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 
 # 安装库文件
 install(TARGETS ${PROJECT_NAME}

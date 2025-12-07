@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "rm_description"
-PROJECT_SPACE_DIR = "/home/stewie/RosFinal/devel/.private/rm_description"
+PROJECT_SPACE_DIR = "/home/stewie/Final/devel/.private/rm_description"
 PROJECT_VERSION = "0.1.9"

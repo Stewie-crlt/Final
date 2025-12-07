@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/stewie/RosFinal/src/rm_template/include/ros_package_template/Algorithm.hpp
+/home/stewie/Final/src/rm_template/include/ros_package_template/Algorithm.hpp
 memory
 -
 Eigen/Core
 -
 
-/home/stewie/RosFinal/src/rm_template/include/ros_package_template/RosPackageTemplate.hpp
+/home/stewie/Final/src/rm_template/include/ros_package_template/RosPackageTemplate.hpp
 ros_package_template/Algorithm.hpp
-/home/stewie/RosFinal/src/rm_template/include/ros_package_template/ros_package_template/Algorithm.hpp
+/home/stewie/Final/src/rm_template/include/ros_package_template/ros_package_template/Algorithm.hpp
 ros/ros.h
 -
 sensor_msgs/Temperature.h
@@ -22,17 +22,17 @@ sensor_msgs/Temperature.h
 std_srvs/Trigger.h
 -
 
-/home/stewie/RosFinal/src/rm_template/src/RosPackageTemplate.cpp
+/home/stewie/Final/src/rm_template/src/RosPackageTemplate.cpp
 ros_package_template/RosPackageTemplate.hpp
-/home/stewie/RosFinal/src/rm_template/src/ros_package_template/RosPackageTemplate.hpp
+/home/stewie/Final/src/rm_template/src/ros_package_template/RosPackageTemplate.hpp
 string
 -
 
-/home/stewie/RosFinal/src/rm_template/src/ros_package_template_node.cpp
+/home/stewie/Final/src/rm_template/src/ros_package_template_node.cpp
 ros/ros.h
 -
 ros_package_template/RosPackageTemplate.hpp
-/home/stewie/RosFinal/src/rm_template/src/ros_package_template/RosPackageTemplate.hpp
+/home/stewie/Final/src/rm_template/src/ros_package_template/RosPackageTemplate.hpp
 
 /opt/ros/noetic/include/ros/advertise_options.h
 ros/forwards.h

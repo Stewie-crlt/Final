@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/share/common-lisp/ros/sentry_chassis_controller/msg/ChassisState.lisp"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/share/common-lisp/ros/sentry_chassis_controller/msg/ChassisState.lisp"
   "CMakeFiles/sentry_chassis_controller_generate_messages_lisp"
 )
 

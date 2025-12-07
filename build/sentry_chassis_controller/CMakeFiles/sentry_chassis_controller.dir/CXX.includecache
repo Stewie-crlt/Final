@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/stewie/RosFinal/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h
+/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h
 ros/ros.h
 -
 controller_interface/controller.h
@@ -19,6 +19,8 @@ geometry_msgs/Twist.h
 -
 nav_msgs/Odometry.h
 -
+std_msgs/Float32.h
+-
 tf/transform_broadcaster.h
 -
 tf/transform_listener.h
@@ -26,9 +28,9 @@ tf/transform_listener.h
 mutex
 -
 
-/home/stewie/RosFinal/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp
+/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp
 sentry_chassis_controller/sentry_chassis_controller.h
-/home/stewie/RosFinal/src/sentry_chassis_controller/src/sentry_chassis_controller/sentry_chassis_controller.h
+/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller/sentry_chassis_controller.h
 pluginlib/class_list_macros.hpp
 -
 cmath
@@ -1589,6 +1591,22 @@ sensor_msgs/ChannelFloat32.h
 -
 
 /opt/ros/noetic/include/std_msgs/Empty.h
+string
+-
+vector
+-
+memory
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+
+/opt/ros/noetic/include/std_msgs/Float32.h
 string
 -
 vector

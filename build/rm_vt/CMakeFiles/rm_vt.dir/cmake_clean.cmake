@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/rm_vt/lib/rm_vt/rm_vt"
-  "/home/stewie/RosFinal/devel/.private/rm_vt/lib/rm_vt/rm_vt.pdb"
+  "/home/stewie/Final/devel/.private/rm_vt/lib/rm_vt/rm_vt"
+  "/home/stewie/Final/devel/.private/rm_vt/lib/rm_vt/rm_vt.pdb"
   "CMakeFiles/rm_vt.dir/src/main.cpp.o"
   "CMakeFiles/rm_vt.dir/src/video_transmission.cpp.o"
 )

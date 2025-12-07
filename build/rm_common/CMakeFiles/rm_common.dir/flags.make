@@ -6,5 +6,5 @@ CXX_FLAGS =  -pthread -fPIC   -Wall -Werror -Wno-enum-compare -std=gnu++14
 
 CXX_DEFINES = -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\"rm_common\" -Drm_common_EXPORTS
 
-CXX_INCLUDES = -I/home/stewie/RosFinal/src/rm_control/rm_common/include -I/home/stewie/RosFinal/devel/.private/rm_msgs/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 
+CXX_INCLUDES = -I/home/stewie/Final/src/rm_control/rm_common/include -I/home/stewie/Final/devel/.private/rm_msgs/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 
 

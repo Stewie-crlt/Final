@@ -1,8 +1,8 @@
-prefix=/home/stewie/RosFinal/devel/.private/sentry_chassis_controller
+prefix=/home/stewie/Final/devel/.private/sentry_chassis_controller
 
 Name: sentry_chassis_controller
 Description: Description of sentry_chassis_controller
 Version: 0.0.0
-Cflags: -I/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/include -I/home/stewie/RosFinal/src/sentry_chassis_controller/include
+Cflags: -I/home/stewie/Final/devel/.private/sentry_chassis_controller/include -I/home/stewie/Final/src/sentry_chassis_controller/include
 Libs: -L${prefix}/lib -lsentry_chassis_controller
-Requires: roscpp roslint controller_interface hardware_interface forward_command_controller pluginlib control_toolbox std_msgs message_runtime geometry_msgs nav_msgs tf
+Requires: roscpp dynamic_reconfigure roslint controller_interface hardware_interface forward_command_controller pluginlib control_toolbox std_msgs message_runtime geometry_msgs nav_msgs tf

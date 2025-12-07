@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/rm_hw/lib/librm_hw_loader_plugins.pdb"
-  "/home/stewie/RosFinal/devel/.private/rm_hw/lib/librm_hw_loader_plugins.so"
+  "/home/stewie/Final/devel/.private/rm_hw/lib/librm_hw_loader_plugins.pdb"
+  "/home/stewie/Final/devel/.private/rm_hw/lib/librm_hw_loader_plugins.so"
   "CMakeFiles/rm_hw_loader_plugins.dir/src/transmission/multi_actuator_transmission_loader.cpp.o"
 )
 

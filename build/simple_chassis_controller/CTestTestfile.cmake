@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/stewie/RosFinal/src/simple_chassis_controller
-# Build directory: /home/stewie/RosFinal/build/simple_chassis_controller
+# Source directory: /home/stewie/Final/src/simple_chassis_controller
+# Build directory: /home/stewie/Final/build/simple_chassis_controller
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

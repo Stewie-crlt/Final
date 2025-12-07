@@ -1,8 +1,8 @@
-prefix=/home/stewie/RosFinal/devel/.private/rm_referee
+prefix=/home/stewie/Final/devel/.private/rm_referee
 
 Name: rm_referee
 Description: Description of rm_referee
 Version: 0.1.20
-Cflags: -I/home/stewie/RosFinal/src/rm_control/rm_referee/include
+Cflags: -I/home/stewie/Final/src/rm_control/rm_referee/include
 Libs: -L${prefix}/lib 
 Requires: roscpp sensor_msgs rm_msgs rm_common tf2_geometry_msgs std_msgs actionlib nav_msgs

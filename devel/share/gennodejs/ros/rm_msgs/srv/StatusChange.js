@@ -1,1 +1,1 @@
-/home/stewie/RosFinal/devel/.private/rm_msgs/share/gennodejs/ros/rm_msgs/srv/StatusChange.js
+/home/stewie/Final/devel/.private/rm_msgs/share/gennodejs/ros/rm_msgs/srv/StatusChange.js

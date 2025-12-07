@@ -7,7 +7,7 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/stewie/RosFinal/devel/.private/catkin_tools_prebuild:$CMAKE_PREFIX_PATH"
-export PWD='/home/stewie/RosFinal/build/catkin_tools_prebuild'
-export ROSLISP_PACKAGE_DIRECTORIES='/home/stewie/RosFinal/devel/.private/catkin_tools_prebuild/share/common-lisp'
-export ROS_PACKAGE_PATH="/home/stewie/RosFinal/build/catkin_tools_prebuild:$ROS_PACKAGE_PATH"
+export CMAKE_PREFIX_PATH="/home/stewie/Final/devel/.private/catkin_tools_prebuild:$CMAKE_PREFIX_PATH"
+export PWD='/home/stewie/Final/build/catkin_tools_prebuild'
+export ROSLISP_PACKAGE_DIRECTORIES='/home/stewie/Final/devel/.private/catkin_tools_prebuild/share/common-lisp'
+export ROS_PACKAGE_PATH="/home/stewie/Final/build/catkin_tools_prebuild:$ROS_PACKAGE_PATH"

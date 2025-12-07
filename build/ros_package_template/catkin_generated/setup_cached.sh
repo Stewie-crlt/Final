@@ -7,7 +7,7 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/stewie/RosFinal/devel/.private/ros_package_template:$CMAKE_PREFIX_PATH"
-export PWD='/home/stewie/RosFinal/build/ros_package_template'
-export ROSLISP_PACKAGE_DIRECTORIES="/home/stewie/RosFinal/devel/.private/ros_package_template/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
-export ROS_PACKAGE_PATH="/home/stewie/RosFinal/src/rm_template:$ROS_PACKAGE_PATH"
+export CMAKE_PREFIX_PATH="/home/stewie/Final/devel/.private/ros_package_template:$CMAKE_PREFIX_PATH"
+export PWD='/home/stewie/Final/build/ros_package_template'
+export ROSLISP_PACKAGE_DIRECTORIES="/home/stewie/Final/devel/.private/ros_package_template/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export ROS_PACKAGE_PATH="/home/stewie/Final/src/rm_template:$ROS_PACKAGE_PATH"

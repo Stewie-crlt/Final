@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/rm_common/lib/rm_common/lqr_test"
-  "/home/stewie/RosFinal/devel/.private/rm_common/lib/rm_common/lqr_test.pdb"
+  "/home/stewie/Final/devel/.private/rm_common/lib/rm_common/lqr_test"
+  "/home/stewie/Final/devel/.private/rm_common/lib/rm_common/lqr_test.pdb"
   "CMakeFiles/lqr_test.dir/test/LqrTest.cpp.o"
   "CMakeFiles/lqr_test.dir/test/unit_test_lqr.cpp.o"
 )

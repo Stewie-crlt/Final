@@ -1,4 +1,4 @@
-prefix=/home/stewie/RosFinal/install
+prefix=/home/stewie/Final/install
 
 Name: rm_msgs
 Description: Description of rm_msgs

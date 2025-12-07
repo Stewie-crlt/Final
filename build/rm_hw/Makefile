@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/stewie/RosFinal/src/rm_control/rm_hw
+CMAKE_SOURCE_DIR = /home/stewie/Final/src/rm_control/rm_hw
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/stewie/RosFinal/build/rm_hw
+CMAKE_BINARY_DIR = /home/stewie/Final/build/rm_hw
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -137,9 +137,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/stewie/RosFinal/build/rm_hw/CMakeFiles /home/stewie/RosFinal/build/rm_hw/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/stewie/Final/build/rm_hw/CMakeFiles /home/stewie/Final/build/rm_hw/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/stewie/RosFinal/build/rm_hw/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/stewie/Final/build/rm_hw/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

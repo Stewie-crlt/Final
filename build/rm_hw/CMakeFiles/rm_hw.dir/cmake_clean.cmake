@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/rm_hw/lib/rm_hw/rm_hw"
-  "/home/stewie/RosFinal/devel/.private/rm_hw/lib/rm_hw/rm_hw.pdb"
+  "/home/stewie/Final/devel/.private/rm_hw/lib/rm_hw/rm_hw"
+  "/home/stewie/Final/devel/.private/rm_hw/lib/rm_hw/rm_hw.pdb"
   "CMakeFiles/rm_hw.dir/src/control_loop.cpp.o"
   "CMakeFiles/rm_hw.dir/src/hardware_interface/can_bus.cpp.o"
   "CMakeFiles/rm_hw.dir/src/hardware_interface/gpio_manager.cpp.o"

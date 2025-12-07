@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/ros_package_template/lib/ros_package_template/ros_package_template-test"
-  "/home/stewie/RosFinal/devel/.private/ros_package_template/lib/ros_package_template/ros_package_template-test.pdb"
+  "/home/stewie/Final/devel/.private/ros_package_template/lib/ros_package_template/ros_package_template-test"
+  "/home/stewie/Final/devel/.private/ros_package_template/lib/ros_package_template/ros_package_template-test.pdb"
   "CMakeFiles/ros_package_template-test.dir/test/AlgorithmTest.cpp.o"
   "CMakeFiles/ros_package_template-test.dir/test/test_ros_package_template.cpp.o"
 )

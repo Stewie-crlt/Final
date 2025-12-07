@@ -67,14 +67,14 @@ set(ros_package_template_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(ros_package_template_SOURCE_PREFIX /home/stewie/RosFinal/src/rm_template)
-  set(ros_package_template_DEVEL_PREFIX /home/stewie/RosFinal/devel/.private/ros_package_template)
+  set(ros_package_template_SOURCE_PREFIX /home/stewie/Final/src/rm_template)
+  set(ros_package_template_DEVEL_PREFIX /home/stewie/Final/devel/.private/ros_package_template)
   set(ros_package_template_INSTALL_PREFIX "")
   set(ros_package_template_PREFIX ${ros_package_template_DEVEL_PREFIX})
 else()
   set(ros_package_template_SOURCE_PREFIX "")
   set(ros_package_template_DEVEL_PREFIX "")
-  set(ros_package_template_INSTALL_PREFIX /home/stewie/RosFinal/install)
+  set(ros_package_template_INSTALL_PREFIX /home/stewie/Final/install)
   set(ros_package_template_PREFIX ${ros_package_template_INSTALL_PREFIX})
 endif()
 
@@ -156,7 +156,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/stewie/RosFinal/install/lib;/home/stewie/RosFinal/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/stewie/Final/install/lib;/home/stewie/Final/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

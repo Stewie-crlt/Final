@@ -1,4 +1,4 @@
-prefix=/home/stewie/RosFinal/install
+prefix=/home/stewie/Final/install
 
 Name: ros_package_template
 Description: Description of ros_package_template

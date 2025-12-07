@@ -1,1 +1,1 @@
-/home/stewie/RosFinal/devel/.private/rm_msgs/share/roseus/ros/rm_msgs/msg/GameRobotStatus.l
+/home/stewie/Final/devel/.private/rm_msgs/share/roseus/ros/rm_msgs/msg/GameRobotStatus.l

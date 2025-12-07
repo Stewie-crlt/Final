@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
 # Source directory: /usr/src/googletest
-# Build directory: /home/stewie/RosFinal/build/simple_chassis_controller/gtest
+# Build directory: /home/stewie/Final/build/simple_chassis_controller/gtest
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

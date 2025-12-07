@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/share/roseus/ros/sentry_chassis_controller/manifest.l"
-  "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/share/roseus/ros/sentry_chassis_controller/msg/ChassisState.l"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/share/roseus/ros/sentry_chassis_controller/manifest.l"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/share/roseus/ros/sentry_chassis_controller/msg/ChassisState.l"
   "CMakeFiles/sentry_chassis_controller_generate_messages_eus"
 )
 

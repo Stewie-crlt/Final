@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/ros_package_template/lib/libros_package_template_core.pdb"
-  "/home/stewie/RosFinal/devel/.private/ros_package_template/lib/libros_package_template_core.so"
+  "/home/stewie/Final/devel/.private/ros_package_template/lib/libros_package_template_core.pdb"
+  "/home/stewie/Final/devel/.private/ros_package_template/lib/libros_package_template_core.so"
   "CMakeFiles/ros_package_template_core.dir/src/Algorithm.cpp.o"
 )
 

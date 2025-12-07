@@ -67,14 +67,14 @@ set(sentry_chassis_controller_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("TRUE" STREQUAL "TRUE")
-  set(sentry_chassis_controller_SOURCE_PREFIX /home/stewie/RosFinal/src/sentry_chassis_controller)
-  set(sentry_chassis_controller_DEVEL_PREFIX /home/stewie/RosFinal/devel/.private/sentry_chassis_controller)
+  set(sentry_chassis_controller_SOURCE_PREFIX /home/stewie/Final/src/sentry_chassis_controller)
+  set(sentry_chassis_controller_DEVEL_PREFIX /home/stewie/Final/devel/.private/sentry_chassis_controller)
   set(sentry_chassis_controller_INSTALL_PREFIX "")
   set(sentry_chassis_controller_PREFIX ${sentry_chassis_controller_DEVEL_PREFIX})
 else()
   set(sentry_chassis_controller_SOURCE_PREFIX "")
   set(sentry_chassis_controller_DEVEL_PREFIX "")
-  set(sentry_chassis_controller_INSTALL_PREFIX /home/stewie/RosFinal/install)
+  set(sentry_chassis_controller_INSTALL_PREFIX /home/stewie/Final/install)
   set(sentry_chassis_controller_PREFIX ${sentry_chassis_controller_INSTALL_PREFIX})
 endif()
 
@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(sentry_chassis_controller_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/include;/home/stewie/RosFinal/src/sentry_chassis_controller/include " STREQUAL " ")
+if(NOT "/home/stewie/Final/devel/.private/sentry_chassis_controller/include;/home/stewie/Final/src/sentry_chassis_controller/include " STREQUAL " ")
   set(sentry_chassis_controller_INCLUDE_DIRS "")
-  set(_include_dirs "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/include;/home/stewie/RosFinal/src/sentry_chassis_controller/include")
+  set(_include_dirs "/home/stewie/Final/devel/.private/sentry_chassis_controller/include;/home/stewie/Final/src/sentry_chassis_controller/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")
@@ -110,7 +110,7 @@ if(NOT "/home/stewie/RosFinal/devel/.private/sentry_chassis_controller/include;/
         message(FATAL_ERROR "Project 'sentry_chassis_controller' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  ${_report}")
       endif()
     else()
-      message(FATAL_ERROR "Project 'sentry_chassis_controller' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/stewie/RosFinal/src/sentry_chassis_controller/${idir}'.  ${_report}")
+      message(FATAL_ERROR "Project 'sentry_chassis_controller' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/stewie/Final/src/sentry_chassis_controller/${idir}'.  ${_report}")
     endif()
     _list_append_unique(sentry_chassis_controller_INCLUDE_DIRS ${include})
   endforeach()
@@ -156,7 +156,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/stewie/RosFinal/devel/.private/sentry_chassis_controller/lib;/home/stewie/RosFinal/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/stewie/Final/devel/.private/sentry_chassis_controller/lib;/home/stewie/Final/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -187,7 +187,7 @@ foreach(t ${sentry_chassis_controller_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "roscpp;roslint;controller_interface;hardware_interface;forward_command_controller;pluginlib;control_toolbox;std_msgs;message_runtime;geometry_msgs;nav_msgs;tf")
+set(depends "roscpp;dynamic_reconfigure;roslint;controller_interface;hardware_interface;forward_command_controller;pluginlib;control_toolbox;std_msgs;message_runtime;geometry_msgs;nav_msgs;tf")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls

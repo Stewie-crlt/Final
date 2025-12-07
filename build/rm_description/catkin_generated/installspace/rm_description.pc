@@ -1,4 +1,4 @@
-prefix=/home/stewie/RosFinal/install
+prefix=/home/stewie/Final/install
 
 Name: rm_description
 Description: Description of rm_description

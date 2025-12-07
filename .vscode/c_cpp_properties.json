@@ -8,8 +8,8 @@
       "includePath": [
         "/opt/ros/noetic/include/**",
         "/usr/include/**",
-        "/home/stewie/RosFinal/devel/include/**",
-        "/home/stewie/RosFinal/src/sentry_chassis_controller/include/**"
+        "/home/stewie/Final/devel/include/**",
+        "/home/stewie/Final/src/sentry_chassis_controller/include/**"
       ],
       "name": "ROS",
       "intelliSenseMode": "gcc-x64",

@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC   -Wall -Werror -Wno-inconsistent-missing-override -std=gnu++1
 
 CXX_DEFINES = -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\"rm_hw\" -Drm_hw_loader_plugins_EXPORTS
 
-CXX_INCLUDES = -I/home/stewie/RosFinal/src/rm_control/rm_hw/include -I/home/stewie/RosFinal/devel/.private/rm_msgs/include -I/home/stewie/RosFinal/src/rm_control/rm_common/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 
+CXX_INCLUDES = -I/home/stewie/Final/src/rm_control/rm_hw/include -I/home/stewie/Final/devel/.private/rm_msgs/include -I/home/stewie/Final/src/rm_control/rm_common/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 
 

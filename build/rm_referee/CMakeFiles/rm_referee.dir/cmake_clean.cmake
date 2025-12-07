@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/stewie/RosFinal/devel/.private/rm_referee/lib/rm_referee/rm_referee"
-  "/home/stewie/RosFinal/devel/.private/rm_referee/lib/rm_referee/rm_referee.pdb"
+  "/home/stewie/Final/devel/.private/rm_referee/lib/rm_referee/rm_referee"
+  "/home/stewie/Final/devel/.private/rm_referee/lib/rm_referee/rm_referee.pdb"
   "CMakeFiles/rm_referee.dir/src/main.cpp.o"
   "CMakeFiles/rm_referee.dir/src/referee.cpp.o"
   "CMakeFiles/rm_referee.dir/src/referee_base.cpp.o"
