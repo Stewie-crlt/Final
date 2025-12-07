@@ -65,8 +65,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   // 新增：自锁功能参数
   bool enable_lock_mode_;        // 是否启用自锁功能
   double lock_timeout_;          // 进入自锁的超时时间
-  double lock_angle_f;            // 自锁时的轮子角度（弧度）
-  double lock_angle_b;  
+  double lock_angle_;            // 自锁时的轮子角度（弧度）  
   bool is_locked_;               // 当前是否处于自锁状态
   
   // 当前速度指令

@@ -45,8 +45,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   // 新增：自锁功能参数
   enable_lock_mode_ = controller_nh.param("enable_lock_mode", true);
   lock_timeout_ = controller_nh.param("lock_timeout", 1.0);
-  lock_angle_f = controller_nh.param("lock_angle", 0.785);
-  lock_angle_b = controller_nh.param("lock_angle", 2.355); // 45度，单位弧度
+  lock_angle_ = controller_nh.param("lock_angle", 0.785);
   is_locked_ = false;
 
   // 新增：路程发布参数
@@ -97,7 +96,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   vy_actual_ = 0.0;
   wz_actual_ = 0.0;
   
-  // 新增：初始化总路程
+  //初始化总路程
   total_distance_ = 0.0;
 
   // 初始化TF监听器（用于世界坐标系速度模式）
@@ -125,10 +124,10 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
     tf_broadcaster_.reset(new tf::TransformBroadcaster());
   }
 
-  ROS_INFO("SentryChassisController initialized: world_vel_mode = %s, enable_lock_mode = %s, lock_anglef = %.2f rad, lock_angleb = %.2f rad", 
+  ROS_INFO("SentryChassisController initialized: world_vel_mode = %s, enable_lock_mode = %s, lock_anglef = %.2f rad", 
            world_vel_mode_ ? "true" : "false", 
            enable_lock_mode_ ? "true" : "false",
-           lock_angle_f,lock_angle_b);
+           lock_angle_);
   ROS_INFO("Distance tracking: %s", publish_distance ? "enabled" : "disabled");
 
   return true;
@@ -173,10 +172,10 @@ void SentryChassisController::setLockMode(bool enable) {
     // 左侧轮子：lock_angle（正角度，向外）
     // 右侧轮子：-lock_angle（负角度，向外）
     // 这样所有轮子都向外转，形成自锁
-    pivot_cmd_[0] = lock_angle_f;      // 左前：向外转
-    pivot_cmd_[1] = -lock_angle_f;     // 右前：向外转  
-    pivot_cmd_[2] = -lock_angle_f;      // 左后：向外转
-    pivot_cmd_[3] = lock_angle_f;     // 右后：向外转
+    pivot_cmd_[0] = lock_angle_;      // 左前：向外转
+    pivot_cmd_[1] = -lock_angle_;     // 右前：向外转  
+    pivot_cmd_[2] = -lock_angle_;      // 左后：向外转
+    pivot_cmd_[3] = lock_angle_;     // 右后：向外转
     
     // 所有轮子速度设为0
     for (int i = 0; i < 4; ++i) {
