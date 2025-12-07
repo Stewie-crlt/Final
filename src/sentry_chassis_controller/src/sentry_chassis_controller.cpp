@@ -354,8 +354,7 @@ void SentryChassisController::computeWheelCommands(double vx, double vy, double 
   }
 }
 
-void SentryChassisController::computeOdometry(const ros::Time &time, const ros::Duration &period) //里程计实现
-{
+void SentryChassisController::computeOdometry(const ros::Time &time, const ros::Duration &period) {
   // 获取轮子的实际角速度
   double wheel_vel[4] = {
     front_left_wheel_joint_.getVelocity(),
@@ -383,56 +382,61 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     wheel_linear_vel[i] = wheel_vel[i] * R;
   }
   
-  // 使用舵轮底盘正运动学模型
-  // 每个轮子对底盘中心速度的贡献
-  // 根据运动学关系：v_wheel_i = [vx - wz*Y_i, vy + wz*X_i] · [cos(θ_i), sin(θ_i)]
-  // 其中(X_i, Y_i)是轮子位置，θ_i是轮子转向角
-  
-  // 设置轮子位置（相对于底盘中心）
-  double wheel_pos_x[4] = {L, L, -L, -L};
-  double wheel_pos_y[4] = {W, -W, W, -W};
-  
-  // 构建线性方程组：Ax = b
-  // x = [vx, vy, wz]^T 是底盘速度（机体坐标系）
-  // 每个轮子提供一个方程：v_wheel_i = cos(θ_i)*(vx - wz*Y_i) + sin(θ_i)*(vy + wz*X_i)
-  
-  // 使用最小二乘法求解超定方程组（4个方程，3个未知数）
-  Eigen::MatrixXd A(4, 3);
-  Eigen::VectorXd b(4);
-  
+  // 正运动学：根据轮子速度和角度计算机体速度
+  // 每个轮子在机体坐标系下的速度分量
+  double vx_wheel[4], vy_wheel[4];
   for (int i = 0; i < 4; ++i) {
-    double cos_theta = cos(pivot_angle[i]);
-    double sin_theta = sin(pivot_angle[i]);
-    
-    // 系数矩阵A的每一行
-    A(i, 0) = cos_theta;                    // vx的系数
-    A(i, 1) = sin_theta;                    // vy的系数
-    A(i, 2) = -cos_theta * wheel_pos_y[i] + sin_theta * wheel_pos_x[i]; // wz的系数
-    
-    // 右侧向量b
-    b(i) = wheel_linear_vel[i];
+    vx_wheel[i] = wheel_linear_vel[i] * cos(pivot_angle[i]);
+    vy_wheel[i] = wheel_linear_vel[i] * sin(pivot_angle[i]);
   }
   
-  // 使用最小二乘法求解：x = (A^T * A)^(-1) * A^T * b
-  Eigen::Vector3d x = (A.transpose() * A).inverse() * A.transpose() * b;
+  // 使用加权平均计算机体速度
+  // 直接对轮子速度进行平均
+  vx_actual_ = (vx_wheel[0] + vx_wheel[1] + vx_wheel[2] + vx_wheel[3]) / 4.0;
+  vy_actual_ = (vy_wheel[0] + vy_wheel[1] + vy_wheel[2] + vy_wheel[3]) / 4.0;
   
-  // 提取底盘速度
-  vx_actual_ = x(0);
-  vy_actual_ = x(1);
-  wz_actual_ = x(2);
+  // 计算角速度 - 使用运动学关系
+  wz_actual_ = 0.0;
+  double sum_wz = 0.0;
+  int count = 0;
   
-  // 可选：添加数据有效性检查
+  // 通过每个轮子的运动关系估算角速度
   for (int i = 0; i < 4; ++i) {
-    double cos_theta = cos(pivot_angle[i]);
-    double sin_theta = sin(pivot_angle[i]);
-    double predicted_speed = cos_theta * vx_actual_ + sin_theta * vy_actual_ +
-                           (-cos_theta * wheel_pos_y[i] + sin_theta * wheel_pos_x[i]) * wz_actual_;
+    // 根据轮子位置和速度计算对机体角速度的贡献
+    double wheel_vx = vx_wheel[i];
+    double wheel_vy = vy_wheel[i];
     
-    double error = fabs(predicted_speed - wheel_linear_vel[i]);
-    if (error > 0.1) {  // 误差阈值，可调整
-      ROS_WARN_THROTTLE(1.0, "Wheel %d kinematics mismatch: measured=%.3f, predicted=%.3f, error=%.3f",
-                       i, wheel_linear_vel[i], predicted_speed, error);
+    // 轮子位置
+    double wheel_x, wheel_y;
+    switch(i) {
+      case 0: // 前左
+        wheel_x = L; wheel_y = W;
+        break;
+      case 1: // 前右
+        wheel_x = L; wheel_y = -W;
+        break;
+      case 2: // 后左
+        wheel_x = -L; wheel_y = W;
+        break;
+      case 3: // 后右
+        wheel_x = -L; wheel_y = -W;
+        break;
     }
+    
+    // 轮子速度应该等于机体速度加上角速度引起的线速度
+    // v_wheel = v_body + w × r
+    // 所以：w = (v_wheel - v_body) × r / |r|^2 在z方向的分量
+    double wz_cb = ((wheel_vx - vx_actual_) * (-wheel_y) + 
+                        (wheel_vy - vy_actual_) * wheel_x) / (wheel_x * wheel_x + wheel_y * wheel_y);
+    
+    if (!std::isnan(wz_cb) && !std::isinf(wz_cb)) {
+      sum_wz += wz_cb;
+      count++;
+    }
+  }
+  
+  if (count > 0) {
+    wz_actual_ = sum_wz / count;
   }
   
   // 积分得到位置
@@ -453,19 +457,15 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     x_ += world_vx * dt;
     y_ += world_vy * dt;
     
-    // 计算并累加路程
+    //计算并累加路程
     double instant_speed = sqrt(world_vx * world_vx + world_vy * world_vy);
     total_distance_ += instant_speed * dt;
     
-    // 调试输出
-    if (debug_print_) {
-      static ros::Time last_print = time;
-      if ((time - last_print).toSec() > 1.0) {
-        ROS_INFO_THROTTLE(1.0, 
-          "Odometry - Vx: %.3f, Vy: %.3f, Wz: %.3f, X: %.3f, Y: %.3f, Theta: %.3f, Dist: %.3f",
-          vx_actual_, vy_actual_, wz_actual_, x_, y_, theta_, total_distance_);
-        last_print = time;
-      }
+    // 调试输出：每5秒打印一次总路程
+    static ros::Time last_distance_print = time;
+    if ((time - last_distance_print).toSec() > 5.0) {
+      ROS_INFO_THROTTLE(5.0, "Total distance traveled: %.3f meters", total_distance_);
+      last_distance_print = time;
     }
   }
   
@@ -485,23 +485,6 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta_);
     odom.pose.pose.orientation = odom_quat;
     
-    // 设置协方差（可以根据需要设置）
-    // 位置协方差
-    for (int i = 0; i < 36; i++) {
-      odom.pose.covariance[i] = 0.0;
-    }
-    odom.pose.covariance[0] = 0.001;  // x
-    odom.pose.covariance[7] = 0.001;  // y
-    odom.pose.covariance[35] = 0.001; // yaw
-    
-    // 速度协方差
-    for (int i = 0; i < 36; i++) {
-      odom.twist.covariance[i] = 0.0;
-    }
-    odom.twist.covariance[0] = 0.001;  // vx
-    odom.twist.covariance[7] = 0.001;  // vy
-    odom.twist.covariance[35] = 0.001; // wz
-    
     // 设置速度
     odom.twist.twist.linear.x = vx_actual_;
     odom.twist.twist.linear.y = vy_actual_;
@@ -511,7 +494,7 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     odom_pub_.publish(odom);
   }
   
-  // 发布路程消息
+  //发布路程消息
   if (distance_pub_.getNumSubscribers() > 0) {
     std_msgs::Float32 distance_msg;
     distance_msg.data = total_distance_;
