@@ -6,19 +6,7 @@
 #include <unistd.h>
 #include <sys/select.h>
 
-#define ARROW_RIGHT 0x43  // Right arrow
-#define ARROW_LEFT 0x44   // Left arrow
-#define ARROW_UP 0x41     // Up arrow
-#define ARROW_DOWN 0x42   // Down arrow
-#define KEYCODE_Q 0x71    // 'q' key
-#define KEYCODE_W 0x77    // 'w' key
-#define KEYCODE_E 0x65    // 'e' key
-#define KEYCODE_A 0x61    // 'a' key
-#define KEYCODE_S 0x73    // 's' key
-#define KEYCODE_D 0x64    // 'd' key
-#define KEYCODE_Z 0x7A    // 'z' key
-#define KEYCODE_X 0x78    // 'x' key
-#define KEYCODE_C 0x63    // 'c' key
+
 #define KEYCODE_SPACE 0x20  // Space key
 #define KEYCODE_ESC 0x1B    // ESC key
 
@@ -33,43 +21,28 @@ private:
     ros::Publisher twist_pub_;
     double linear_vel_, angular_vel_, lateral_vel_;
     double linear_vel_step_, angular_vel_step_, lateral_vel_step_;
-    double max_linear_vel_, max_angular_vel_, max_lateral_vel_;
     geometry_msgs::Twist twist_;
 };
 
+//初始化
 TeleopKeyboard::TeleopKeyboard():
     linear_vel_(0.0),
     angular_vel_(0.0),
     lateral_vel_(0.0),
     linear_vel_step_(0.3),
     angular_vel_step_(1.0),
-    lateral_vel_step_(0.3),
-    max_linear_vel_(2.0),
-    max_angular_vel_(3.0),
-    max_lateral_vel_(1.0)
+    lateral_vel_step_(0.3)
+
 {
     // 初始化参数
     nh_.param("linear_vel_step", linear_vel_step_, linear_vel_step_);
     nh_.param("angular_vel_step", angular_vel_step_, angular_vel_step_);
     nh_.param("lateral_vel_step", lateral_vel_step_, lateral_vel_step_);
-    nh_.param("max_linear_vel", max_linear_vel_, max_linear_vel_);
-    nh_.param("max_angular_vel", max_angular_vel_, max_angular_vel_);
-    nh_.param("max_lateral_vel", max_lateral_vel_, max_lateral_vel_);
     
     twist_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     
     ROS_INFO("Teleop Keyboard Control Started");
     ROS_INFO("--------------------------------");
-    ROS_INFO("Controls:");
-    ROS_INFO("  w/s : Set forward/backward speed (X direction)");
-    ROS_INFO("  a/d : Set left/right rotation speed (Z axis)");
-    ROS_INFO("  q/e : Set left/right lateral speed (Y direction)");
-    ROS_INFO("  arrow keys : Direct movement commands");
-    ROS_INFO("  space : Stop all motion");
-    ROS_INFO("  z/x/c : Adjust speed step sizes");
-    ROS_INFO(" ");
-    
-    ROS_INFO("Speed steps (fixed values when pressing keys):");
     ROS_INFO("  Linear (X): %.2f m/s", linear_vel_step_);
     ROS_INFO("  Angular (Z): %.2f rad/s", angular_vel_step_);
     ROS_INFO("  Lateral (Y): %.2f m/s", lateral_vel_step_);
@@ -153,65 +126,41 @@ void TeleopKeyboard::keyLoop()
         
         switch(c)
         {
-        case KEYCODE_W:  // 设置前进速度（正值）
+        case 'w':  // 设置前进速度（正值）
             linear_vel_ = linear_vel_step_;
             lateral_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("FORWARD: linear speed = %.2f m/s", linear_vel_);
             break;
-        case KEYCODE_S:  // 设置后退速度（负值）
+        case 's':  // 设置后退速度（负值）
             linear_vel_ = -linear_vel_step_;
             lateral_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("BACKWARD: linear speed = %.2f m/s", linear_vel_);
             break;
-        case KEYCODE_A:  // 设置左转速度（正值）
+        case 'a':  // 设置左转速度（正值）
             angular_vel_ = angular_vel_step_;
             linear_vel_ = 0.0;
             lateral_vel_ = 0.0;
             ROS_INFO("LEFT TURN: angular speed = %.2f rad/s", angular_vel_);
             break;
-        case KEYCODE_D:  // 设置右转速度（负值）
+        case 'd':  // 设置右转速度（负值）
             angular_vel_ = -angular_vel_step_;
             linear_vel_ = 0.0;
             lateral_vel_ = 0.0;
             ROS_INFO("RIGHT TURN: angular speed = %.2f rad/s", angular_vel_);
             break;
-        case KEYCODE_Q:  // 设置左移速度（正值）
+        case 'q':  // 设置左移速度（正值）
             lateral_vel_ = lateral_vel_step_;
             linear_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("LEFT SIDEWAYS: lateral speed = %.2f m/s", lateral_vel_);
             break;
-        case KEYCODE_E:  // 设置右移速度（负值）
+        case 'e':  // 设置右移速度（负值）
             lateral_vel_ = -lateral_vel_step_;
             linear_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("RIGHT SIDEWAYS: lateral speed = %.2f m/s", lateral_vel_);
-            break;
-        case ARROW_UP:  // 上箭头 - 向前
-            linear_vel_ = linear_vel_step_;
-            lateral_vel_ = 0.0;
-            angular_vel_ = 0.0;
-            ROS_INFO("FORWARD (arrow): linear speed = %.2f m/s", linear_vel_);
-            break;
-        case ARROW_DOWN:  // 下箭头 - 向后
-            linear_vel_ = -linear_vel_step_;
-            lateral_vel_ = 0.0;
-            angular_vel_ = 0.0;
-            ROS_INFO("BACKWARD (arrow): linear speed = %.2f m/s", linear_vel_);
-            break;
-        case ARROW_LEFT:  // 左箭头 - 向左平移
-            lateral_vel_ = lateral_vel_step_;
-            linear_vel_ = 0.0;
-            angular_vel_ = 0.0;
-            ROS_INFO("LEFT (arrow): lateral speed = %.2f m/s", lateral_vel_);
-            break;
-        case ARROW_RIGHT:  // 右箭头 - 向右平移
-            lateral_vel_ = -lateral_vel_step_;
-            linear_vel_ = 0.0;
-            angular_vel_ = 0.0;
-            ROS_INFO("RIGHT (arrow): lateral speed = %.2f m/s", lateral_vel_);
             break;
         case KEYCODE_SPACE:  // 空格键 - 停止
             linear_vel_ = 0.0;

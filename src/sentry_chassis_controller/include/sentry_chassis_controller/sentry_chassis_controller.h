@@ -7,7 +7,7 @@
 #include <control_toolbox/pid.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
-#include <std_msgs/Float32.h>  // 新增：用于发布路程
+#include <std_msgs/Float32.h>//用于发布路程
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <mutex>
@@ -33,7 +33,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   void computeOdometry(const ros::Time &time, const ros::Duration &period);
   bool transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
                                    geometry_msgs::Twist& base_vel);
-  void setLockMode(bool enable);  // 新增：设置自锁模式
+  void setLockMode(bool enable);//设置自锁模式
   
   hardware_interface::JointHandle front_left_pivot_joint_, front_right_pivot_joint_, back_left_pivot_joint_, back_right_pivot_joint_;
   hardware_interface::JointHandle front_left_wheel_joint_, front_right_wheel_joint_,
@@ -41,7 +41,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   
   ros::Subscriber cmd_vel_sub_;
   ros::Publisher odom_pub_;
-  ros::Publisher distance_pub_;  // 新增：路程发布器
+  ros::Publisher distance_pub_;//路程发布器
   std::shared_ptr<tf::TransformBroadcaster> tf_broadcaster_;
   std::unique_ptr<tf::TransformListener> tf_listener_;
   ros::Time last_cmd_vel_time_;

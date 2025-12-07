@@ -5,8 +5,8 @@
 
 namespace sentry_chassis_controller {
 
-bool SentryChassisController::init(hardware_interface::EffortJointInterface *effort_joint_interface,
-                                   ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh) {
+bool SentryChassisController::init(hardware_interface::EffortJointInterface *effort_joint_interface,ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh)//初始化控制器 
+{
   // 获取关节句柄
   front_left_wheel_joint_ =
       effort_joint_interface->getHandle("left_front_wheel_joint");
@@ -32,23 +32,22 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   wheel_radius_ = controller_nh.param("wheel_radius", 0.07625);
   cmd_vel_timeout_ = controller_nh.param("cmd_vel_timeout", 0.5);
   max_wheel_speed_ = controller_nh.param("max_wheel_speed", 10.0); // rad/s
-  debug_print_ = controller_nh.param("debug_print", false);
   publish_odom_ = controller_nh.param("publish_odom", true);
   publish_tf_ = controller_nh.param("publish_tf", true);
   odom_frame_id_ = controller_nh.param("odom_frame_id", std::string("odom"));
   base_frame_id_ = controller_nh.param("base_frame_id", std::string("base_link"));
   
-  // 新增：控制模式参数
+  //控制模式参数
   world_vel_mode_ = controller_nh.param("world_vel_mode", false);
   world_frame_id_ = controller_nh.param("world_frame_id", std::string("odom"));
 
-  // 新增：自锁功能参数
+  //自锁功能参数
   enable_lock_mode_ = controller_nh.param("enable_lock_mode", true);
   lock_timeout_ = controller_nh.param("lock_timeout", 1.0);
   lock_angle_ = controller_nh.param("lock_angle", 0.785);
   is_locked_ = false;
 
-  // 新增：路程发布参数
+  //路程发布参数
   bool publish_distance = controller_nh.param("publish_distance", true);
   std::string distance_topic = controller_nh.param("distance_topic", std::string("total_distance"));
 
@@ -56,7 +55,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   // 转向角度PID
   double pivot_p, pivot_i, pivot_d;
   controller_nh.param("pivot_p", pivot_p, 5.0);
-  controller_nh.param("pivot_i", pivot_i, 0.0);
+  controller_nh.param("pivot_i", pivot_i, 1.0);
   controller_nh.param("pivot_d", pivot_d, 0.1);
   
   pid_lf_.initPid(pivot_p, pivot_i, pivot_d, 0.0, 0.0);
@@ -98,26 +97,27 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   
   //初始化总路程
   total_distance_ = 0.0;
-
-  // 初始化TF监听器（用于世界坐标系速度模式）
-  if (world_vel_mode_) {
-    tf_listener_.reset(new tf::TransformListener());
-  }
-
-  // 订阅cmd_vel话题
+  
+  
   ros::NodeHandle nh;
-  cmd_vel_sub_ = nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, 
-                    &SentryChassisController::cmdVelCallback, this);
+  cmd_vel_sub_ = nh.subscribe<geometry_msgs::Twist>("cmd_vel",1,&SentryChassisController::cmdVelCallback,this);
 
   // 发布里程计话题
   if (publish_odom_) {
     odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 50);
   }
 
-  // 新增：发布路程话题
+  //发布路程话题
   if (publish_distance) {
     distance_pub_ = nh.advertise<std_msgs::Float32>(distance_topic, 10);
   }
+  // 初始化TF监听器（用于世界坐标系速度模式）
+  if (world_vel_mode_) {
+    tf_listener_.reset(new tf::TransformListener());
+  }
+
+  // 订阅cmd_vel话题
+  
 
   // 初始化TF广播器
   if (publish_tf_) {
@@ -133,9 +133,9 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   return true;
 }
 
-// 新增：将世界坐标系速度转换到底盘坐标系
-bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel,
-                                                           geometry_msgs::Twist& base_vel) {
+//将世界坐标系速度转换到底盘坐标系
+bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel,geometry_msgs::Twist& base_vel) 
+{
   try {
     tf::StampedTransform transform;
     tf_listener_->lookupTransform(world_frame_id_, base_frame_id_, ros::Time(0), transform);
@@ -168,14 +168,11 @@ void SentryChassisController::setLockMode(bool enable) {
     // 进入自锁模式
     ROS_INFO("Entering lock mode");
     
-    // 设置轮子转向自锁角度
-    // 左侧轮子：lock_angle（正角度，向外）
-    // 右侧轮子：-lock_angle（负角度，向外）
-    // 这样所有轮子都向外转，形成自锁
-    pivot_cmd_[0] = lock_angle_;      // 左前：向外转
-    pivot_cmd_[1] = -lock_angle_;     // 右前：向外转  
-    pivot_cmd_[2] = -lock_angle_;      // 左后：向外转
-    pivot_cmd_[3] = lock_angle_;     // 右后：向外转
+    // 设置轮子转向自锁角度，所有轮子都向外转，形成自锁
+    pivot_cmd_[0] = lock_angle_;
+    pivot_cmd_[1] = -lock_angle_;
+    pivot_cmd_[2] = -lock_angle_;
+    pivot_cmd_[3] = lock_angle_;
     
     // 所有轮子速度设为0
     for (int i = 0; i < 4; ++i) {
@@ -281,15 +278,6 @@ void SentryChassisController::cmdVelCallback(const geometry_msgs::Twist::ConstPt
   
   last_cmd_vel_time_ = ros::Time::now();
   
-  if (debug_print_) {
-    if (world_vel_mode_) {
-      ROS_INFO_THROTTLE(1.0, "Received world velocity command: vx=%.2f, vy=%.2f, wz=%.2f", 
-                       vx_, vy_, wz_);
-    } else {
-      ROS_INFO_THROTTLE(1.0, "Received base velocity command: vx=%.2f, vy=%.2f, wz=%.2f", 
-                       vx_, vy_, wz_);
-    }
-  }
 }
 
 void SentryChassisController::computeWheelCommands(double vx, double vy, double wz) {
@@ -411,7 +399,7 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
   }
   
   // 使用加权平均计算机体速度
-  // 对于全向底盘，我们可以直接对轮子速度进行平均
+  // 直接对轮子速度进行平均
   vx_actual_ = (vx_wheel[0] + vx_wheel[1] + vx_wheel[2] + vx_wheel[3]) / 4.0;
   vy_actual_ = (vy_wheel[0] + vy_wheel[1] + vy_wheel[2] + vy_wheel[3]) / 4.0;
   
@@ -446,11 +434,11 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     // 轮子速度应该等于机体速度加上角速度引起的线速度
     // v_wheel = v_body + w × r
     // 所以：w = (v_wheel - v_body) × r / |r|^2 在z方向的分量
-    double wz_contrib = ((wheel_vx - vx_actual_) * (-wheel_y) + 
+    double wz_cb = ((wheel_vx - vx_actual_) * (-wheel_y) + 
                         (wheel_vy - vy_actual_) * wheel_x) / (wheel_x * wheel_x + wheel_y * wheel_y);
     
-    if (!std::isnan(wz_contrib) && !std::isinf(wz_contrib)) {
-      sum_wz += wz_contrib;
+    if (!std::isnan(wz_cb) && !std::isinf(wz_cb)) {
+      sum_wz += wz_cb;
       count++;
     }
   }
@@ -477,7 +465,7 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     x_ += world_vx * dt;
     y_ += world_vy * dt;
     
-    // 新增：计算并累加路程
+    //计算并累加路程
     double instant_speed = sqrt(world_vx * world_vx + world_vy * world_vy);
     total_distance_ += instant_speed * dt;
     
@@ -514,7 +502,7 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     odom_pub_.publish(odom);
   }
   
-  // 新增：发布路程消息
+  //发布路程消息
   if (distance_pub_.getNumSubscribers() > 0) {
     std_msgs::Float32 distance_msg;
     distance_msg.data = total_distance_;
