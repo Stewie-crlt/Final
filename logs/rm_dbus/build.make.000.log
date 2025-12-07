@@ -1,5 +1,0 @@
-[35m[1mScanning dependencies of target rm_dbus[0m
-[ 66%] [32mBuilding CXX object CMakeFiles/rm_dbus.dir/src/dbus.cpp.o[0m
-[ 66%] [32mBuilding CXX object CMakeFiles/rm_dbus.dir/src/dbus_node.cpp.o[0m
-[100%] [32m[1mLinking CXX executable /home/stewie/Final/devel/.private/rm_dbus/lib/rm_dbus/rm_dbus[0m
-[100%] Built target rm_dbus

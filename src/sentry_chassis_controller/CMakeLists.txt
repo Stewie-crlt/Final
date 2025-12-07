@@ -22,7 +22,7 @@ find_package(catkin REQUIRED
     tf
 )
 
-
+find_package(Eigen3 REQUIRED)
 
 # 添加消息生成
 add_message_files(
@@ -55,11 +55,13 @@ catkin_package(
     nav_msgs
     tf
     DEPENDS
+    Eigen3
 )
 
 include_directories(
     include
     ${catkin_INCLUDE_DIRS}
+    ${Eigen3_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME}
@@ -70,6 +72,7 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
+    Eigen3::Eigen
 )
 
 # 添加 teleop_keyboard 可执行文件

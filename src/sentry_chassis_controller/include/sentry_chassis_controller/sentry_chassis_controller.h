@@ -11,7 +11,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <mutex>
-
+#include <Eigen/Dense>
 namespace sentry_chassis_controller {
 
 class SentryChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface> {
