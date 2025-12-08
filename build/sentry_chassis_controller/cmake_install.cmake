@@ -148,6 +148,22 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/sentry_chassis_controller" TYPE FILE FILES "/home/stewie/Final/devel/.private/sentry_chassis_controller/include/sentry_chassis_controller/PIDConfig.h")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages/sentry_chassis_controller" TYPE FILE FILES "/home/stewie/Final/devel/.private/sentry_chassis_controller/lib/python3/dist-packages/sentry_chassis_controller/__init__.py")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  execute_process(COMMAND "/usr/bin/python3" -m compileall "/home/stewie/Final/devel/.private/sentry_chassis_controller/lib/python3/dist-packages/sentry_chassis_controller/cfg")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages/sentry_chassis_controller" TYPE DIRECTORY FILES "/home/stewie/Final/devel/.private/sentry_chassis_controller/lib/python3/dist-packages/sentry_chassis_controller/cfg")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sentry_chassis_controller/cmake" TYPE FILE FILES "/home/stewie/Final/build/sentry_chassis_controller/catkin_generated/installspace/sentry_chassis_controller-msg-paths.cmake")
 endif()
 

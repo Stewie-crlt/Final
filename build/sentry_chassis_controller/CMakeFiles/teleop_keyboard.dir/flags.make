@@ -6,5 +6,5 @@ CXX_FLAGS =   -Wall -Werror -std=gnu++14
 
 CXX_DEFINES = -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\"sentry_chassis_controller\"
 
-CXX_INCLUDES = -I/home/stewie/Final/devel/.private/sentry_chassis_controller/include -I/home/stewie/Final/src/sentry_chassis_controller/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp 
+CXX_INCLUDES = -I/home/stewie/Final/devel/.private/sentry_chassis_controller/include -I/home/stewie/Final/src/sentry_chassis_controller/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/home/stewie/Final/build/sentry_chassis_controller 
 

@@ -66,7 +66,7 @@ void TeleopKeyboard::keyLoop()
     bool dirty = false;
     
     // 获取终端设置
-    tcgetattr(kfd, &cooked);
+    tcgetattr(kfd, &cooked);//获取当前终端属性
     memcpy(&raw, &cooked, sizeof(struct termios));
     raw.c_lflag &= ~(ICANON | ECHO);
     raw.c_cc[VEOL] = 1;
@@ -126,37 +126,37 @@ void TeleopKeyboard::keyLoop()
         
         switch(c)
         {
-        case 'w':  // 设置前进速度（正值）
+        case 'w':  // 设置前进速度
             linear_vel_ = linear_vel_step_;
             lateral_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("FORWARD: linear speed = %.2f m/s", linear_vel_);
             break;
-        case 's':  // 设置后退速度（负值）
+        case 's':  // 设置后退速度
             linear_vel_ = -linear_vel_step_;
             lateral_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("BACKWARD: linear speed = %.2f m/s", linear_vel_);
             break;
-        case 'a':  // 设置左转速度（正值）
+        case 'a':  // 设置左转速度
             angular_vel_ = angular_vel_step_;
             linear_vel_ = 0.0;
             lateral_vel_ = 0.0;
             ROS_INFO("LEFT TURN: angular speed = %.2f rad/s", angular_vel_);
             break;
-        case 'd':  // 设置右转速度（负值）
+        case 'd':  // 设置右转速度
             angular_vel_ = -angular_vel_step_;
             linear_vel_ = 0.0;
             lateral_vel_ = 0.0;
             ROS_INFO("RIGHT TURN: angular speed = %.2f rad/s", angular_vel_);
             break;
-        case 'q':  // 设置左移速度（正值）
+        case 'q':  // 设置左移速度
             lateral_vel_ = lateral_vel_step_;
             linear_vel_ = 0.0;
             angular_vel_ = 0.0;
             ROS_INFO("LEFT SIDEWAYS: lateral speed = %.2f m/s", lateral_vel_);
             break;
-        case 'e':  // 设置右移速度（负值）
+        case 'e':  // 设置右移速度
             lateral_vel_ = -lateral_vel_step_;
             linear_vel_ = 0.0;
             angular_vel_ = 0.0;
@@ -168,7 +168,7 @@ void TeleopKeyboard::keyLoop()
             lateral_vel_ = 0.0;
             ROS_INFO("STOPPING all motion");
             break;
-        case 'z':  // 减小速度步长
+        case 'z':  // 减小速度
             linear_vel_step_ *= 0.8;
             angular_vel_step_ *= 0.8;
             lateral_vel_step_ *= 0.8;
@@ -178,14 +178,14 @@ void TeleopKeyboard::keyLoop()
             ROS_INFO("Speed steps DECREASED: linear=%.3f, angular=%.3f, lateral=%.3f", 
                      linear_vel_step_, angular_vel_step_, lateral_vel_step_);
             break;
-        case 'x':  // 增加速度步长
+        case 'x':  // 增加速度
             linear_vel_step_ *= 1.2;
             angular_vel_step_ *= 1.2;
             lateral_vel_step_ *= 1.2;
             ROS_INFO("Speed steps INCREASED: linear=%.3f, angular=%.3f, lateral=%.3f", 
                      linear_vel_step_, angular_vel_step_, lateral_vel_step_);
             break;
-        case 'c':  // 重置速度步长
+        case 'c':  // 重置速度
             linear_vel_step_ = 0.3;
             angular_vel_step_ = 1.0;
             lateral_vel_step_ = 0.3;

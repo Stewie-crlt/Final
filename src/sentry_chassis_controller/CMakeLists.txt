@@ -8,7 +8,7 @@ add_definitions(-Wall -Werror)
 find_package(catkin REQUIRED
     COMPONENTS
     roscpp
-    dynamic_reconfigure
+    dynamic_reconfigure  # 确保包含
     roslint
     controller_interface
     hardware_interface
@@ -30,6 +30,11 @@ add_message_files(
   ChassisState.msg
 )
 
+# 生成动态重配置文件
+generate_dynamic_reconfigure_options(
+  cfg/PID.cfg
+)
+
 generate_messages(
   DEPENDENCIES
   std_msgs
@@ -42,7 +47,7 @@ catkin_package(
     ${PROJECT_NAME}
     CATKIN_DEPENDS
     roscpp
-    dynamic_reconfigure
+    dynamic_reconfigure  # 确保包含
     roslint
     controller_interface
     hardware_interface
@@ -64,11 +69,15 @@ include_directories(
     ${Eigen3_INCLUDE_DIRS}
 )
 
+# Include generated headers from dynamic_reconfigure (build dir)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 add_library(${PROJECT_NAME}
     src/sentry_chassis_controller.cpp
 )
 
-
+# Ensure dynamic_reconfigure-generated files are created before building the library
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
@@ -83,7 +92,6 @@ target_link_libraries(teleop_keyboard ${catkin_LIBRARIES})
 install(TARGETS teleop_keyboard
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
 
 # 安装库文件
 install(TARGETS ${PROJECT_NAME}

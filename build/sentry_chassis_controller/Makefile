@@ -1117,6 +1117,19 @@ nav_msgs_generate_messages_eus/fast:
 .PHONY : nav_msgs_generate_messages_eus/fast
 
 #=============================================================================
+# Target rules for targets named sentry_chassis_controller_gencfg
+
+# Build rule for target.
+sentry_chassis_controller_gencfg: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sentry_chassis_controller_gencfg
+.PHONY : sentry_chassis_controller_gencfg
+
+# fast build rule for target.
+sentry_chassis_controller_gencfg/fast:
+	$(MAKE) -f CMakeFiles/sentry_chassis_controller_gencfg.dir/build.make CMakeFiles/sentry_chassis_controller_gencfg.dir/build
+.PHONY : sentry_chassis_controller_gencfg/fast
+
+#=============================================================================
 # Target rules for targets named tf_generate_messages_py
 
 # Build rule for target.
@@ -1568,6 +1581,7 @@ help:
 	@echo "... actionlib_msgs_generate_messages_cpp"
 	@echo "... install/local"
 	@echo "... nav_msgs_generate_messages_eus"
+	@echo "... sentry_chassis_controller_gencfg"
 	@echo "... tf_generate_messages_py"
 	@echo "... std_msgs_generate_messages_eus"
 	@echo "... actionlib_msgs_generate_messages_lisp"

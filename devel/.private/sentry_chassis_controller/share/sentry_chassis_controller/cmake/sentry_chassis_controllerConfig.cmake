@@ -179,7 +179,7 @@ foreach(library ${libraries})
   endif()
 endforeach()
 
-set(sentry_chassis_controller_EXPORTED_TARGETS "sentry_chassis_controller_generate_messages_cpp;sentry_chassis_controller_generate_messages_eus;sentry_chassis_controller_generate_messages_lisp;sentry_chassis_controller_generate_messages_nodejs;sentry_chassis_controller_generate_messages_py")
+set(sentry_chassis_controller_EXPORTED_TARGETS "sentry_chassis_controller_gencfg;sentry_chassis_controller_generate_messages_cpp;sentry_chassis_controller_generate_messages_eus;sentry_chassis_controller_generate_messages_lisp;sentry_chassis_controller_generate_messages_nodejs;sentry_chassis_controller_generate_messages_py")
 # create dummy targets for exported code generation targets to make life of users easier
 foreach(t ${sentry_chassis_controller_EXPORTED_TARGETS})
   if(NOT TARGET ${t})

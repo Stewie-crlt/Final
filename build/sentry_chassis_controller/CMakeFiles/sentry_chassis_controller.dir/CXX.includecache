@@ -6,6 +6,24 @@
 
 #IncludeRegexTransform: 
 
+/home/stewie/Final/devel/.private/sentry_chassis_controller/include/sentry_chassis_controller/PIDConfig.h
+dynamic_reconfigure/config_tools.h
+-
+limits
+-
+ros/node_handle.h
+-
+dynamic_reconfigure/ConfigDescription.h
+-
+dynamic_reconfigure/ParamDescription.h
+-
+dynamic_reconfigure/Group.h
+-
+dynamic_reconfigure/config_init_mutex.h
+-
+boost/any.hpp
+-
+
 /home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h
 ros/ros.h
 -
@@ -27,7 +45,13 @@ tf/transform_listener.h
 -
 mutex
 -
+memory
+-
+dynamic_reconfigure/server.h
+-
 Eigen/Dense
+-
+sentry_chassis_controller/PIDConfig.h
 -
 
 /home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp
@@ -38,6 +62,8 @@ pluginlib/class_list_macros.hpp
 cmath
 -
 tf/transform_listener.h
+-
+Eigen/Dense
 -
 
 /opt/ros/noetic/include/class_loader/class_loader.hpp
