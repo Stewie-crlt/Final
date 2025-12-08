@@ -3,14 +3,30 @@
 #include <cmath>
 #include <tf/transform_listener.h>
 #include <Eigen/Dense>
+#include <geometry_msgs/AccelStamped.h>
 
 namespace sentry_chassis_controller {
 
 SentryChassisController::SentryChassisController()//初始化
-    : vx_(0.0), vy_(0.0), wz_(0.0),
+    : wheel_track_(0.0), wheel_base_(0.0), wheel_radius_(0.0),
+      cmd_vel_timeout_(0.0), max_wheel_speed_(0.0),
+      vx_(0.0), vy_(0.0), wz_(0.0),
+      // 加速度限制参数
+      max_linear_acc_x_(2.0),
+      max_linear_acc_y_(2.0),
+      max_angular_acc_z_(3.0),
+      vx_target_(0.0),
+      vy_target_(0.0),
+      wz_target_(0.0),
+      // 轮子命令数组在构造函数体内初始化
+      // 里程计相关
       x_(0.0), y_(0.0), theta_(0.0),
       vx_actual_(0.0), vy_actual_(0.0), wz_actual_(0.0),
       total_distance_(0.0),
+      // 上一周期速度
+      vx_prev_(0.0), vy_prev_(0.0), wz_prev_(0.0),
+      vx_actual_prev_(0.0), vy_actual_prev_(0.0), wz_actual_prev_(0.0),
+      // 标志位
       debug_print_(false),
       publish_odom_(false),
       publish_tf_(false),
@@ -21,10 +37,18 @@ SentryChassisController::SentryChassisController()//初始化
       enable_lock_mode_(true),
       lock_timeout_(1.0),
       lock_angle_(0.785),
-      is_locked_(false) {
+      is_locked_(false),
+      enable_acceleration_limits_(true),
+      // 新增：加速度发布参数
+      publish_acceleration_(true),
+      acceleration_topic_("acceleration") {
+  // 初始化轮子命令数组
+  for (int i = 0; i < 4; ++i) {
+    pivot_cmd_[i] = 0.0;
+    wheel_cmd_[i] = 0.0;
+    last_valid_pivot_cmd_[i] = 0.0;
+  }
 }
-
-
 
 bool SentryChassisController::init(hardware_interface::EffortJointInterface *effort_joint_interface,ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh) //初始化
 {
@@ -39,7 +63,6 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
     back_left_pivot_joint_ = effort_joint_interface->getHandle("left_back_pivot_joint");
     back_right_pivot_joint_ = effort_joint_interface->getHandle("right_back_pivot_joint");
 
-
   // 获取几何参数
   controller_nh.param("wheel_track", wheel_track_, 0.362);
   controller_nh.param("wheel_base", wheel_base_, 0.362);
@@ -47,6 +70,16 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   controller_nh.param("cmd_vel_timeout", cmd_vel_timeout_, 0.5);
   controller_nh.param("max_wheel_speed", max_wheel_speed_, 10.0);
   controller_nh.param("debug_print", debug_print_, false);
+
+  // 新增：加速度限制参数（从配置文件读取，不提供动态调参）
+  controller_nh.param("enable_acceleration_limits", enable_acceleration_limits_, true);
+  controller_nh.param("max_linear_acc_x", max_linear_acc_x_, 2.0);
+  controller_nh.param("max_linear_acc_y", max_linear_acc_y_, 2.0);
+  controller_nh.param("max_angular_acc_z", max_angular_acc_z_, 3.0);
+
+  // 新增：加速度发布参数
+  controller_nh.param("publish_acceleration", publish_acceleration_, true);
+  controller_nh.param("acceleration_topic", acceleration_topic_, std::string("acceleration"));
 
   // 里程计
   controller_nh.param("publish_odom", publish_odom_, true);
@@ -98,6 +131,9 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   vx_ = 0.0;
   vy_ = 0.0;
   wz_ = 0.0;
+  vx_target_ = 0.0;    // 初始化目标速度
+  vy_target_ = 0.0;
+  wz_target_ = 0.0;
   last_cmd_vel_time_ = ros::Time::now();
 
   // 初始化轮子命令
@@ -114,6 +150,14 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   vx_actual_ = 0.0;
   vy_actual_ = 0.0;
   wz_actual_ = 0.0;
+  
+  // 初始化上一周期速度
+  vx_prev_ = 0.0;
+  vy_prev_ = 0.0;
+  wz_prev_ = 0.0;
+  vx_actual_prev_ = 0.0;
+  vy_actual_prev_ = 0.0;
+  wz_actual_prev_ = 0.0;
   
   // 初始化总路程
   total_distance_ = 0.0;
@@ -132,6 +176,11 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
     distance_pub_ = nh.advertise<std_msgs::Float32>(distance_topic, 10);
   }
 
+  // 新增：发布加速度话题
+  if (publish_acceleration_) {
+    accel_pub_ = nh.advertise<geometry_msgs::AccelStamped>(acceleration_topic_, 10);
+  }
+
   // 初始化TF监听器（用于世界坐标系速度模式）
   if (world_vel_mode_) {
     tf_listener_.reset(new tf::TransformListener());
@@ -142,7 +191,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
     tf_broadcaster_.reset(new tf::TransformBroadcaster());
   }
 
-  // 设置动态重配置服务器
+  // 设置动态重配置服务器（仅用于PID参数调整）
   dyn_reconf_server_.reset(
       new dynamic_reconfigure::Server<sentry_chassis_controller::PIDConfig>(controller_nh));
   
@@ -153,6 +202,10 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   ROS_INFO("SentryChassisController initialized successfully");
   ROS_INFO("  Wheel track: %.3f m, Wheel base: %.3f m, Wheel radius: %.3f m", 
            wheel_track_, wheel_base_, wheel_radius_);
+  ROS_INFO("  Acceleration limits: %s (ax=%.2f m/s², ay=%.2f m/s², az=%.2f rad/s²)", 
+           enable_acceleration_limits_ ? "enabled" : "disabled",
+           max_linear_acc_x_, max_linear_acc_y_, max_angular_acc_z_);
+  ROS_INFO("  Acceleration publishing: %s", publish_acceleration_ ? "enabled" : "disabled");
   ROS_INFO("  World velocity mode: %s", world_vel_mode_ ? "enabled" : "disabled");
   ROS_INFO("  Lock mode: %s (timeout: %.1f s, angle: %.2f rad)", 
            enable_lock_mode_ ? "enabled" : "disabled", lock_timeout_, lock_angle_);
@@ -162,7 +215,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   return true;
 }
 
-// 动态重配置回调函数
+// 动态重配置回调函数（仅用于PID参数调整）
 void SentryChassisController::reconfigureCallback(sentry_chassis_controller::PIDConfig &config, uint32_t level) {
   // 设置转向PID参数
   pid_lf_.setGains(config.pivot_p, config.pivot_i, config.pivot_d, 0.0, 0.0);
@@ -183,6 +236,78 @@ void SentryChassisController::reconfigureCallback(sentry_chassis_controller::PID
                    config.wheel_p, config.wheel_i, config.wheel_d);
 }
 
+// 新增：加速度计算函数
+Acceleration SentryChassisController::computeAcceleration(const ros::Duration& period) {
+  Acceleration accel;
+  double dt = period.toSec();
+  
+  if (dt > 0.0 && dt < 1.0) {
+    // 计算底盘坐标系下的加速度
+    accel.linear_x = (vx_actual_ - vx_actual_prev_) / dt;
+    accel.linear_y = (vy_actual_ - vy_actual_prev_) / dt;
+    accel.angular_z = (wz_actual_ - wz_actual_prev_) / dt;
+    
+    // 保存当前速度作为下一周期的上一速度
+    vx_actual_prev_ = vx_actual_;
+    vy_actual_prev_ = vy_actual_;
+    wz_actual_prev_ = wz_actual_;
+  } else {
+    accel.linear_x = 0.0;
+    accel.linear_y = 0.0;
+    accel.angular_z = 0.0;
+  }
+  
+  return accel;
+}
+
+// 加速度限制函数
+void SentryChassisController::applyAccelerationLimits(const ros::Duration& period) {
+  if (!enable_acceleration_limits_) {
+    // 如果不启用加速度限制，直接使用指令速度
+    vx_target_ = vx_;
+    vy_target_ = vy_;
+    wz_target_ = wz_;
+    return;
+  }
+  
+  double dt = period.toSec();
+  if (dt <= 0.0 || dt > 0.1) {  // 防止过大或过小的时间间隔
+    dt = 0.001;  // 默认1ms
+  }
+  
+  // 计算最大允许的速度变化量
+  double max_dvx = max_linear_acc_x_ * dt;
+  double max_dvy = max_linear_acc_y_ * dt;
+  double max_dwz = max_angular_acc_z_ * dt;
+  
+  // 限制速度变化率
+  double dvx = vx_ - vx_target_;
+  double dvy = vy_ - vy_target_;
+  double dwz = wz_ - wz_target_;
+  
+  // 应用加速度限制
+  if (fabs(dvx) > max_dvx) {
+    dvx = (dvx > 0) ? max_dvx : -max_dvx;
+  }
+  
+  if (fabs(dvy) > max_dvy) {
+    dvy = (dvy > 0) ? max_dvy : -max_dvy;
+  }
+  
+  if (fabs(dwz) > max_dwz) {
+    dwz = (dwz > 0) ? max_dwz : -max_dwz;
+  }
+  
+  // 更新目标速度
+  vx_target_ += dvx;
+  vy_target_ += dvy;
+  wz_target_ += dwz;
+  
+  // 如果目标速度接近零，直接设为零以避免微小振荡
+  if (fabs(vx_target_) < 0.001) vx_target_ = 0.0;
+  if (fabs(vy_target_) < 0.001) vy_target_ = 0.0;
+  if (fabs(wz_target_) < 0.001) wz_target_ = 0.0;
+}
 
 bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, geometry_msgs::Twist& base_vel) //TF转化函数
 {
@@ -223,6 +348,11 @@ void SentryChassisController::setLockMode(bool enable) //设置自锁函数
       last_valid_pivot_cmd_[i] = pivot_cmd_[i];
     }
     
+    // 重置目标速度为0
+    vx_target_ = 0.0;
+    vy_target_ = 0.0;
+    wz_target_ = 0.0;
+    
     pid_lf_.reset();
     pid_rf_.reset();
     pid_lb_.reset();
@@ -240,6 +370,11 @@ void SentryChassisController::setLockMode(bool enable) //设置自锁函数
     }
   } else {
     ROS_INFO("Exiting lock mode");
+    
+    // 重置目标速度为0，以便从静止开始加速
+    vx_target_ = 0.0;
+    vy_target_ = 0.0;
+    wz_target_ = 0.0;
     
     pid_lf_.reset();
     pid_rf_.reset();
@@ -268,6 +403,19 @@ void SentryChassisController::starting(const ros::Time& time) {
   last_odom_time_ = time;
   is_locked_ = false;
   total_distance_ = 0.0;
+  
+  // 重置目标速度
+  vx_target_ = 0.0;
+  vy_target_ = 0.0;
+  wz_target_ = 0.0;
+  
+  // 重置上一周期速度
+  vx_prev_ = 0.0;
+  vy_prev_ = 0.0;
+  wz_prev_ = 0.0;
+  vx_actual_prev_ = 0.0;
+  vy_actual_prev_ = 0.0;
+  wz_actual_prev_ = 0.0;
   
   if (distance_pub_) {
     std_msgs::Float32 distance_msg;
@@ -561,6 +709,34 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     distance_pub_.publish(distance_msg);
   }
   
+  // 新增：发布加速度
+  if (publish_acceleration_ && accel_pub_) {
+    // 计算实际加速度
+    Acceleration actual_accel = computeAcceleration(period);
+    
+    geometry_msgs::AccelStamped accel_msg;
+    accel_msg.header.stamp = time;
+    accel_msg.header.frame_id = base_frame_id_;
+    
+    // 线加速度（底盘坐标系）
+    accel_msg.accel.linear.x = actual_accel.linear_x;
+    accel_msg.accel.linear.y = actual_accel.linear_y;
+    accel_msg.accel.linear.z = 0.0;  // 平面运动，Z方向为0
+    
+    // 角加速度
+    accel_msg.accel.angular.x = 0.0;
+    accel_msg.accel.angular.y = 0.0;
+    accel_msg.accel.angular.z = actual_accel.angular_z;
+    
+    accel_pub_.publish(accel_msg);
+    
+    // 在debug模式下打印加速度信息
+    if (debug_print_) {
+      ROS_INFO_THROTTLE(2.0, "Actual acceleration: ax=%.2f m/s², ay=%.2f m/s², az=%.2f rad/s²",
+                       actual_accel.linear_x, actual_accel.linear_y, actual_accel.angular_z);
+    }
+  }
+  
   // 发布TF变换
   if (publish_tf_ && tf_broadcaster_) {
     geometry_msgs::TransformStamped odom_trans;
@@ -594,11 +770,14 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
     std::lock_guard<std::mutex> lock(cmd_vel_mutex_);
     
     if (cmd_vel_active && !is_locked_) {
+      // 应用加速度限制
+      applyAccelerationLimits(period);
+      
       if (world_vel_mode_) {
         geometry_msgs::Twist world_vel, base_vel;
-        world_vel.linear.x = vx_;
-        world_vel.linear.y = vy_;
-        world_vel.angular.z = wz_;
+        world_vel.linear.x = vx_target_;  // 使用经过加速度限制的速度
+        world_vel.linear.y = vy_target_;
+        world_vel.angular.z = wz_target_;
         
         if (transformVelocityToBaseFrame(world_vel, base_vel)) {
           vx = base_vel.linear.x;
@@ -607,7 +786,7 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
           
           if (debug_print_) {
             ROS_INFO_THROTTLE(2.0, "Transformed velocity - World(%.2f,%.2f,%.2f) -> Base(%.2f,%.2f,%.2f)", 
-                             vx_, vy_, wz_, vx, vy, wz);
+                             vx_target_, vy_target_, wz_target_, vx, vy, wz);
           }
         } else {
           vx = 0.0;
@@ -616,18 +795,30 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
           ROS_WARN_THROTTLE(1.0, "TF transform failed, using zero velocity");
         }
       } else {
-        vx = vx_;
-        vy = vy_;
-        wz = wz_;
+        // 直接使用经过加速度限制的底盘坐标系速度
+        vx = vx_target_;
+        vy = vy_target_;
+        wz = wz_target_;
+      }
+      
+      if (debug_print_ && enable_acceleration_limits_) {
+        ROS_INFO_THROTTLE(2.0, "Speed: cmd(%.2f,%.2f,%.2f) -> limited(%.2f,%.2f,%.2f)", 
+                         vx_, vy_, wz_, vx_target_, vy_target_, wz_target_);
       }
     } else if (is_locked_) {
       vx = 0.0;
       vy = 0.0;
       wz = 0.0;
+      // 锁模式下重置目标速度为0
+      vx_target_ = 0.0;
+      vy_target_ = 0.0;
+      wz_target_ = 0.0;
     } else {
       vx = 0.0;
       vy = 0.0;
       wz = 0.0;
+      // 指令超时，平滑减速到0
+      applyAccelerationLimits(period);
     }
   }
   

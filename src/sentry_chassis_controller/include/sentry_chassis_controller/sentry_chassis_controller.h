@@ -18,6 +18,13 @@
 
 namespace sentry_chassis_controller {
 
+// 新增：加速度消息类型
+struct Acceleration {
+  double linear_x;
+  double linear_y;
+  double angular_z;
+};
+
 class SentryChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface> {
  public:
   SentryChassisController();
@@ -38,8 +45,12 @@ class SentryChassisController : public controller_interface::Controller<hardware
   bool transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
                                    geometry_msgs::Twist& base_vel);
   void setLockMode(bool enable);
+  void applyAccelerationLimits(const ros::Duration& period);
   
-  // 动态重配置回调函数
+  // 新增：加速度计算函数
+  Acceleration computeAcceleration(const ros::Duration& period);
+  
+  // 动态重配置回调函数（仅用于PID参数调整）
   void reconfigureCallback(sentry_chassis_controller::PIDConfig &config, uint32_t level);
   
   hardware_interface::JointHandle front_left_pivot_joint_, front_right_pivot_joint_, 
@@ -50,10 +61,11 @@ class SentryChassisController : public controller_interface::Controller<hardware
   ros::Subscriber cmd_vel_sub_;
   ros::Publisher odom_pub_;
   ros::Publisher distance_pub_;
+  ros::Publisher accel_pub_;  // 新增：加速度发布器
   std::shared_ptr<tf::TransformBroadcaster> tf_broadcaster_;
   std::unique_ptr<tf::TransformListener> tf_listener_;
   
-  // 动态重配置服务器
+  // 动态重配置服务器（仅用于PID参数调整）
   std::shared_ptr<dynamic_reconfigure::Server<sentry_chassis_controller::PIDConfig>> dyn_reconf_server_;
   
   ros::Time last_cmd_vel_time_;
@@ -76,6 +88,10 @@ class SentryChassisController : public controller_interface::Controller<hardware
   double vx_actual_, vy_actual_, wz_actual_;
   double total_distance_;
   
+  // 新增：上一周期速度（用于计算加速度）
+  double vx_prev_, vy_prev_, wz_prev_;
+  double vx_actual_prev_, vy_actual_prev_, wz_actual_prev_;
+  
   bool debug_print_;
   bool publish_odom_;
   bool publish_tf_;
@@ -89,6 +105,17 @@ class SentryChassisController : public controller_interface::Controller<hardware
   double lock_timeout_;
   double lock_angle_;  
   bool is_locked_;
+  
+  // 加速度限制参数（不需要动态调参）
+  bool enable_acceleration_limits_;
+  double max_linear_acc_x_;
+  double max_linear_acc_y_;
+  double max_angular_acc_z_;
+  double vx_target_, vy_target_, wz_target_;
+  
+  // 新增：加速度发布参数
+  bool publish_acceleration_;
+  std::string acceleration_topic_;
   
   control_toolbox::Pid pid_lf_, pid_rf_, pid_lb_, pid_rb_;
   control_toolbox::Pid pid_lf_wheel_, pid_rf_wheel_, pid_lb_wheel_, pid_rb_wheel_;

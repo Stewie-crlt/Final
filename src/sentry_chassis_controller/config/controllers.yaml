@@ -17,16 +17,26 @@ sentry_chassis_controller:
   odom_frame_id: "odom"
   base_frame_id: "base_link"
   
-  # 新增：世界坐标系速度控制参数
+  # 新增：底盘加速度限制参数（静态配置，不提供动态调参）
+  enable_acceleration_limits: true    # 是否启用加速度限制
+  max_linear_acc_x: 2.0               # X轴最大线加速度 (m/s²)
+  max_linear_acc_y: 2.0               # Y轴最大线加速度 (m/s²)
+  max_angular_acc_z: 3.0              # Z轴最大角加速度 (rad/s²)
+  
+  # 新增：加速度发布参数
+  publish_acceleration: true          # 是否发布实际加速度
+  acceleration_topic: "acceleration"  # 加速度话题名称
+  
+  # 世界坐标系速度控制参数
   world_vel_mode: false      # true: 全局坐标系速度模式, false: 底盘坐标系速度模式
   world_frame_id: "odom"     # 世界坐标系的frame_id ("odom" 或 "map")
   
-  # 新增：自锁功能参数
+  # 自锁功能参数
   enable_lock_mode: true     # 启用自锁功能
   lock_timeout: 1.0          # 1秒后进入自锁模式
   lock_angle: 0.785          # 自锁角度，45度（弧度）
   
-  # 新增：路程发布参数
+  # 路程发布参数
   publish_distance: true     # 是否发布总路程
   distance_topic: "total_distance"  # 路程话题名称
 

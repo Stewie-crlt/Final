@@ -1,0 +1,79 @@
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:[m[K In member function ‘[01m[Kvoid sentry_chassis_controller::SentryChassisController::reconfigureCallback(sentry_chassis_controller::PIDConfig&, uint32_t)[m[K’:
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:233:40:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kenable_acceleration_limits[m[K’
+  233 |   enable_acceleration_limits_ = config.[01;31m[Kenable_acceleration_limits[m[K;
+      |                                        [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:234:30:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kmax_linear_acc_x[m[K’
+  234 |   max_linear_acc_x_ = config.[01;31m[Kmax_linear_acc_x[m[K;
+      |                              [01;31m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:235:30:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kmax_linear_acc_y[m[K’
+  235 |   max_linear_acc_y_ = config.[01;31m[Kmax_linear_acc_y[m[K;
+      |                              [01;31m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:236:31:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kmax_angular_acc_z[m[K’
+  236 |   max_angular_acc_z_ = config.[01;31m[Kmax_angular_acc_z[m[K;
+      |                               [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/opt/ros/noetic/include/ros/ros.h:40[m[K,
+                 from [01m[K/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h:4[m[K,
+                 from [01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:1[m[K:
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:244:27:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kmax_linear_acc_x[m[K’
+  244 |                    config.[01;31m[Kmax_linear_acc_x[m[K, config.max_linear_acc_y, config.max_angular_acc_z,
+      |                           [01;31m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:351:165:[m[K [01;36m[Knote: [m[Kin definition of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION_WITH_FILTER[m[K’
+  351 |     ::ros::console::print(filter, __rosconsole_define_location__loc.logger_, __rosconsole_define_location__loc.level_, __FILE__, __LINE__, __ROSCONSOLE_FUNCTION__, [01;36m[K__VA_ARGS__[m[K)
+      |                                                                                                                                                                     [01;36m[K^~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:466:7:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION[m[K’
+  466 |       [01;36m[KROSCONSOLE_PRINT_AT_LOCATION[m[K(__VA_ARGS__); \
+      |       [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/rosconsole/macros_generated.h:122:40:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_LOG_THROTTLE[m[K’
+  122 | #define ROS_INFO_THROTTLE(period, ...) [01;36m[KROS_LOG_THROTTLE[m[K(period, ::ros::console::levels::Info, ROSCONSOLE_DEFAULT_NAME, __VA_ARGS__)
+      |                                        [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:238:3:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_INFO_THROTTLE[m[K’
+  238 |   [01;36m[KROS_INFO_THROTTLE[m[K(1.0, "PID parameters updated: "
+      |   [01;36m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:244:52:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kmax_linear_acc_y[m[K’
+  244 |                    config.max_linear_acc_x, config.[01;31m[Kmax_linear_acc_y[m[K, config.max_angular_acc_z,
+      |                                                    [01;31m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:351:165:[m[K [01;36m[Knote: [m[Kin definition of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION_WITH_FILTER[m[K’
+  351 |     ::ros::console::print(filter, __rosconsole_define_location__loc.logger_, __rosconsole_define_location__loc.level_, __FILE__, __LINE__, __ROSCONSOLE_FUNCTION__, [01;36m[K__VA_ARGS__[m[K)
+      |                                                                                                                                                                     [01;36m[K^~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:466:7:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION[m[K’
+  466 |       [01;36m[KROSCONSOLE_PRINT_AT_LOCATION[m[K(__VA_ARGS__); \
+      |       [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/rosconsole/macros_generated.h:122:40:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_LOG_THROTTLE[m[K’
+  122 | #define ROS_INFO_THROTTLE(period, ...) [01;36m[KROS_LOG_THROTTLE[m[K(period, ::ros::console::levels::Info, ROSCONSOLE_DEFAULT_NAME, __VA_ARGS__)
+      |                                        [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:238:3:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_INFO_THROTTLE[m[K’
+  238 |   [01;36m[KROS_INFO_THROTTLE[m[K(1.0, "PID parameters updated: "
+      |   [01;36m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:244:77:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kmax_angular_acc_z[m[K’
+  244 |                    config.max_linear_acc_x, config.max_linear_acc_y, config.[01;31m[Kmax_angular_acc_z[m[K,
+      |                                                                             [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:351:165:[m[K [01;36m[Knote: [m[Kin definition of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION_WITH_FILTER[m[K’
+  351 |     ::ros::console::print(filter, __rosconsole_define_location__loc.logger_, __rosconsole_define_location__loc.level_, __FILE__, __LINE__, __ROSCONSOLE_FUNCTION__, [01;36m[K__VA_ARGS__[m[K)
+      |                                                                                                                                                                     [01;36m[K^~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:466:7:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION[m[K’
+  466 |       [01;36m[KROSCONSOLE_PRINT_AT_LOCATION[m[K(__VA_ARGS__); \
+      |       [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/rosconsole/macros_generated.h:122:40:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_LOG_THROTTLE[m[K’
+  122 | #define ROS_INFO_THROTTLE(period, ...) [01;36m[KROS_LOG_THROTTLE[m[K(period, ::ros::console::levels::Info, ROSCONSOLE_DEFAULT_NAME, __VA_ARGS__)
+      |                                        [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:238:3:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_INFO_THROTTLE[m[K’
+  238 |   [01;36m[KROS_INFO_THROTTLE[m[K(1.0, "PID parameters updated: "
+      |   [01;36m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:245:27:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass sentry_chassis_controller::PIDConfig[m[K’ has no member named ‘[01m[Kenable_acceleration_limits[m[K’
+  245 |                    config.[01;31m[Kenable_acceleration_limits[m[K ? "true" : "false");
+      |                           [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:351:165:[m[K [01;36m[Knote: [m[Kin definition of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION_WITH_FILTER[m[K’
+  351 |     ::ros::console::print(filter, __rosconsole_define_location__loc.logger_, __rosconsole_define_location__loc.level_, __FILE__, __LINE__, __ROSCONSOLE_FUNCTION__, [01;36m[K__VA_ARGS__[m[K)
+      |                                                                                                                                                                     [01;36m[K^~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/ros/console.h:466:7:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROSCONSOLE_PRINT_AT_LOCATION[m[K’
+  466 |       [01;36m[KROSCONSOLE_PRINT_AT_LOCATION[m[K(__VA_ARGS__); \
+      |       [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/opt/ros/noetic/include/rosconsole/macros_generated.h:122:40:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_LOG_THROTTLE[m[K’
+  122 | #define ROS_INFO_THROTTLE(period, ...) [01;36m[KROS_LOG_THROTTLE[m[K(period, ::ros::console::levels::Info, ROSCONSOLE_DEFAULT_NAME, __VA_ARGS__)
+      |                                        [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:238:3:[m[K [01;36m[Knote: [m[Kin expansion of macro ‘[01m[KROS_INFO_THROTTLE[m[K’
+  238 |   [01;36m[KROS_INFO_THROTTLE[m[K(1.0, "PID parameters updated: "
+      |   [01;36m[K^~~~~~~~~~~~~~~~~[m[K
+make[2]: *** [CMakeFiles/sentry_chassis_controller.dir/build.make:63：CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o] 错误 1
+make[1]: *** [CMakeFiles/Makefile2:466：CMakeFiles/sentry_chassis_controller.dir/all] 错误 2
+make: *** [Makefile:141：all] 错误 2

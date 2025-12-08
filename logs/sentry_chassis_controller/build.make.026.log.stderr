@@ -1,0 +1,25 @@
+In file included from [01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:1[m[K:
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h:[m[K In constructor ‘[01m[Ksentry_chassis_controller::SentryChassisController::SentryChassisController()[m[K’:
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h:93:15:[m[K [01;31m[Kerror: [m[K‘[01m[Ksentry_chassis_controller::SentryChassisController::world_frame_id_[m[K’ will be initialized after [[01;31m[K-Werror=reorder[m[K]
+   93 |   std::string [01;31m[Kworld_frame_id_[m[K;
+      |               [01;31m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h:72:10:[m[K [01;31m[Kerror: [m[K  ‘[01m[Kdouble sentry_chassis_controller::SentryChassisController::max_linear_acc_x_[m[K’ [[01;31m[K-Werror=reorder[m[K]
+   72 |   double [01;31m[Kmax_linear_acc_x_[m[K;    // X轴最大线加速度
+      |          [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:9:1:[m[K [01;31m[Kerror: [m[K  when initialized here [[01;31m[K-Werror=reorder[m[K]
+    9 | [01;31m[KSentryChassisController[m[K::SentryChassisController()//初始化
+      | [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+In file included from [01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:1[m[K:
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h:101:8:[m[K [01;31m[Kerror: [m[K‘[01m[Ksentry_chassis_controller::SentryChassisController::enable_acceleration_limits_[m[K’ will be initialized after [[01;31m[K-Werror=reorder[m[K]
+  101 |   bool [01;31m[Kenable_acceleration_limits_[m[K;
+      |        [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h:95:8:[m[K [01;31m[Kerror: [m[K  ‘[01m[Kbool sentry_chassis_controller::SentryChassisController::enable_lock_mode_[m[K’ [[01;31m[K-Werror=reorder[m[K]
+   95 |   bool [01;31m[Kenable_lock_mode_[m[K;
+      |        [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[01m[K/home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp:9:1:[m[K [01;31m[Kerror: [m[K  when initialized here [[01;31m[K-Werror=reorder[m[K]
+    9 | [01;31m[KSentryChassisController[m[K::SentryChassisController()//初始化
+      | [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+cc1plus: all warnings being treated as errors
+make[2]: *** [CMakeFiles/sentry_chassis_controller.dir/build.make:63：CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o] 错误 1
+make[1]: *** [CMakeFiles/Makefile2:466：CMakeFiles/sentry_chassis_controller.dir/all] 错误 2
+make: *** [Makefile:141：all] 错误 2
