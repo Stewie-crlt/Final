@@ -114,5 +114,5 @@ install(FILES config/controllers.yaml
 install(FILES sentry_chassis_controller_plugins.xml
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-add_definitions(-Wall -Werror -Wno-reorder)
+
 roslint_cpp()

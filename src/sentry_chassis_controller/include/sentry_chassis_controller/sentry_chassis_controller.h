@@ -6,28 +6,22 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <control_toolbox/pid.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Accel.h>
 #include <nav_msgs/Odometry.h>
-#include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Bool.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <mutex>
-#include <memory>
+#include <queue>
 #include <dynamic_reconfigure/server.h>
-#include <Eigen/Dense>
-#include <sentry_chassis_controller/PIDConfig.h>
+#include "sentry_chassis_controller/PIDConfig.h"
 
 namespace sentry_chassis_controller {
 
-// 新增：加速度消息类型
-struct Acceleration {
-  double linear_x;
-  double linear_y;
-  double angular_z;
-};
-
 class SentryChassisController : public controller_interface::Controller<hardware_interface::EffortJointInterface> {
  public:
-  SentryChassisController();
+  SentryChassisController() = default;
   ~SentryChassisController() override = default;
 
   bool init(hardware_interface::EffortJointInterface *effort_joint_interface,
@@ -41,57 +35,49 @@ class SentryChassisController : public controller_interface::Controller<hardware
  private:
   void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg);
   void computeWheelCommands(double vx, double vy, double wz);
+  void computeWheelCommandsForSelfLock();
   void computeOdometry(const ros::Time &time, const ros::Duration &period);
+  void computeAndPublishAcceleration(const ros::Time &time, const ros::Duration &period);
+  void computeAndPublishPower(const ros::Time &time, const ros::Duration &period);
+  void applyPowerLimits(double &torque_fl, double &torque_fr, 
+                        double &torque_bl, double &torque_br, 
+                        const double &vel_fl, const double &vel_fr,
+                        const double &vel_bl, const double &vel_br);
   bool transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
                                    geometry_msgs::Twist& base_vel);
-  void setLockMode(bool enable);
-  void applyAccelerationLimits(const ros::Duration& period);
   
-  // 新增：加速度计算函数
-  Acceleration computeAcceleration(const ros::Duration& period);
-  
-  // 动态重配置回调函数（仅用于PID参数调整）
   void reconfigureCallback(sentry_chassis_controller::PIDConfig &config, uint32_t level);
   
-  hardware_interface::JointHandle front_left_pivot_joint_, front_right_pivot_joint_, 
-                                  back_left_pivot_joint_, back_right_pivot_joint_;
+  void updateSelfLockState(const ros::Time &time, const ros::Duration &period);
+  void enterSelfLockMode();
+  void exitSelfLockMode();
+  
+  hardware_interface::JointHandle front_left_pivot_joint_, front_right_pivot_joint_, back_left_pivot_joint_, back_right_pivot_joint_;
   hardware_interface::JointHandle front_left_wheel_joint_, front_right_wheel_joint_,
       back_left_wheel_joint_, back_right_wheel_joint_;
   
   ros::Subscriber cmd_vel_sub_;
   ros::Publisher odom_pub_;
-  ros::Publisher distance_pub_;
-  ros::Publisher accel_pub_;  // 新增：加速度发布器
+  ros::Publisher accel_pub_;
+  ros::Publisher total_power_pub_;      // 总功率发布器
+  ros::Publisher consumption_power_pub_; // 消耗功率发布器
+  ros::Publisher regeneration_power_pub_; // 再生功率发布器
+  ros::Publisher power_limit_pub_;       // 功率限制发布器
+  ros::Publisher power_limited_pub_;     // 功率限制状态发布器
+  
   std::shared_ptr<tf::TransformBroadcaster> tf_broadcaster_;
   std::unique_ptr<tf::TransformListener> tf_listener_;
   
-  // 动态重配置服务器（仅用于PID参数调整）
-  std::shared_ptr<dynamic_reconfigure::Server<sentry_chassis_controller::PIDConfig>> dyn_reconf_server_;
-  
   ros::Time last_cmd_vel_time_;
   ros::Time last_odom_time_;
+  ros::Time last_accel_time_;
+  ros::Time last_power_time_;
   
   double wheel_track_;
   double wheel_base_;
   double wheel_radius_;
   double cmd_vel_timeout_;
   double max_wheel_speed_;
-  double vx_, vy_, wz_;
-  std::mutex cmd_vel_mutex_;
-  
-  double pivot_cmd_[4];
-  double wheel_cmd_[4];
-  
-  double last_valid_pivot_cmd_[4];
-  
-  double x_, y_, theta_;
-  double vx_actual_, vy_actual_, wz_actual_;
-  double total_distance_;
-  
-  // 新增：上一周期速度（用于计算加速度）
-  double vx_prev_, vy_prev_, wz_prev_;
-  double vx_actual_prev_, vy_actual_prev_, wz_actual_prev_;
-  
   bool debug_print_;
   bool publish_odom_;
   bool publish_tf_;
@@ -101,26 +87,52 @@ class SentryChassisController : public controller_interface::Controller<hardware
   bool world_vel_mode_;
   std::string world_frame_id_;
   
-  bool enable_lock_mode_;
-  double lock_timeout_;
-  double lock_angle_;  
-  bool is_locked_;
+  // 功率控制参数（从配置文件读取，不支持动态调参）
+  double max_total_power_;
+  bool power_limit_enabled_;
+  double current_power_limit_;
+  double power_filter_time_constant_;
   
-  // 加速度限制参数（不需要动态调参）
-  bool enable_acceleration_limits_;
-  double max_linear_acc_x_;
-  double max_linear_acc_y_;
-  double max_angular_acc_z_;
-  double vx_target_, vy_target_, wz_target_;
+  // 功率计算相关
+  double total_power_;
+  double power_consumption_;
+  double power_regeneration_;
+  bool power_limited_;
+  std::queue<double> power_history_;
+  const size_t POWER_HISTORY_SIZE = 10;
   
-  // 新增：加速度发布参数
-  bool publish_acceleration_;
-  std::string acceleration_topic_;
+  // 加速度限制参数
+  double max_linear_acceleration_;
+  double max_angular_acceleration_;
+  double last_vx_, last_vy_, last_wz_;
+  
+  bool enable_self_lock_;
+  double self_lock_timeout_;
+  double self_lock_angle_;
+  bool in_self_lock_mode_;
+  ros::Time self_lock_start_time_;
+  
+  boost::shared_ptr<dynamic_reconfigure::Server<sentry_chassis_controller::PIDConfig>> dyn_reconfig_server_;
+  dynamic_reconfigure::Server<sentry_chassis_controller::PIDConfig>::CallbackType dyn_reconfig_callback_;
+  std::mutex reconfigure_mutex_;
+  
+  double vx_, vy_, wz_;
+  std::mutex cmd_vel_mutex_;
+  std::mutex power_mutex_;
+  
+  double pivot_cmd_[4];
+  double wheel_cmd_[4];
+  
+  double last_valid_pivot_cmd_[4];
+  
+  double x_, y_, theta_;
+  double vx_actual_, vy_actual_, wz_actual_;
+  
+  double ax_actual_, ay_actual_, awz_actual_;
   
   control_toolbox::Pid pid_lf_, pid_rf_, pid_lb_, pid_rb_;
   control_toolbox::Pid pid_lf_wheel_, pid_rf_wheel_, pid_lb_wheel_, pid_rb_wheel_;
 };
+}// namespace sentry_chassis_controller
 
-} // namespace sentry_chassis_controller
-
-#endif // SENTRY_CHASSIS_CONTROLLER_SENTRY_CHASSIS_CONTROLLER_H
+#endif //SENTRY_CHASSIS_CONTROLLER_SENTRY_CHASSIS_CONTROLLER_H

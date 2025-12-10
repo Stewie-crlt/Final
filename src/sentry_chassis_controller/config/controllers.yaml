@@ -2,7 +2,7 @@ sentry_chassis_controller:
   type: sentry_chassis_controller/SentryChassisController
   wheel_track: 0.362
   wheel_base: 0.362
-  wheel_radius: 0.07625
+  wheel_radius: 0.076
   cmd_vel_timeout: 0.5
   max_wheel_speed: 10.0
   debug_print: true
@@ -17,28 +17,23 @@ sentry_chassis_controller:
   odom_frame_id: "odom"
   base_frame_id: "base_link"
   
-  # 新增：底盘加速度限制参数（静态配置，不提供动态调参）
-  enable_acceleration_limits: true    # 是否启用加速度限制
-  max_linear_acc_x: 2.0               # X轴最大线加速度 (m/s²)
-  max_linear_acc_y: 2.0               # Y轴最大线加速度 (m/s²)
-  max_angular_acc_z: 3.0              # Z轴最大角加速度 (rad/s²)
-  
-  # 新增：加速度发布参数
-  publish_acceleration: true          # 是否发布实际加速度
-  acceleration_topic: "acceleration"  # 加速度话题名称
-  
   # 世界坐标系速度控制参数
-  world_vel_mode: false      # true: 全局坐标系速度模式, false: 底盘坐标系速度模式
-  world_frame_id: "odom"     # 世界坐标系的frame_id ("odom" 或 "map")
+  world_vel_mode: true
+  world_frame_id: "odom"
   
-  # 自锁功能参数
-  enable_lock_mode: true     # 启用自锁功能
-  lock_timeout: 1.0          # 1秒后进入自锁模式
-  lock_angle: 0.785          # 自锁角度，45度（弧度）
+  # 自锁参数
+  enable_self_lock: true
+  self_lock_timeout: 1.0
+  self_lock_angle: 0.785
   
-  # 路程发布参数
-  publish_distance: true     # 是否发布总路程
-  distance_topic: "total_distance"  # 路程话题名称
+  # 加速度限制参数
+  max_linear_acceleration: 2.0
+  max_angular_acceleration: 3.0
+  
+  # 功率控制参数（不支持动态调参）
+  max_total_power: 2           # 最大总功率 (W)
+  power_limit_enabled: true        # 启用功率限制
+  power_filter_time_constant: 0.1  # 功率滤波时间常数
 
 joint_state_controller:
   type: joint_state_controller/JointStateController
