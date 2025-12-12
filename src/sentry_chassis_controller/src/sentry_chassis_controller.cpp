@@ -7,7 +7,8 @@
 
 namespace sentry_chassis_controller {
 
-void SentryChassisController::reconfigureCallback(sentry_chassis_controller::PIDConfig &config, uint32_t level) {
+void SentryChassisController::reconfigureCallback(sentry_chassis_controller::PIDConfig &config, uint32_t level) 
+{
   std::lock_guard<std::mutex> lock(reconfigure_mutex_);
   
   if (level & 0x1) {
@@ -15,8 +16,7 @@ void SentryChassisController::reconfigureCallback(sentry_chassis_controller::PID
     pid_rf_.setGains(config.pivot_p, config.pivot_i, config.pivot_d, 0.0, 0.0);
     pid_lb_.setGains(config.pivot_p, config.pivot_i, config.pivot_d, 0.0, 0.0);
     pid_rb_.setGains(config.pivot_p, config.pivot_i, config.pivot_d, 0.0, 0.0);
-    ROS_INFO("Updated pivot PID: P=%.2f, I=%.2f, D=%.2f", 
-             config.pivot_p, config.pivot_i, config.pivot_d);
+    ROS_INFO("Updated pivot PID: P=%.2f, I=%.2f, D=%.2f", config.pivot_p, config.pivot_i, config.pivot_d);
   }
   
   if (level & 0x2) {
@@ -24,13 +24,12 @@ void SentryChassisController::reconfigureCallback(sentry_chassis_controller::PID
     pid_rf_wheel_.setGains(config.wheel_p, config.wheel_i, config.wheel_d, 0.0, 0.0);
     pid_lb_wheel_.setGains(config.wheel_p, config.wheel_i, config.wheel_d, 0.0, 0.0);
     pid_rb_wheel_.setGains(config.wheel_p, config.wheel_i, config.wheel_d, 0.0, 0.0);
-    ROS_INFO("Updated wheel PID: P=%.2f, I=%.2f, D=%.2f", 
-             config.wheel_p, config.wheel_i, config.wheel_d);
+    ROS_INFO("Updated wheel PID: P=%.2f, I=%.2f, D=%.2f", config.wheel_p, config.wheel_i, config.wheel_d);
   }
 }
 
-bool SentryChassisController::init(hardware_interface::EffortJointInterface *effort_joint_interface,
-                                   ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh) {
+bool SentryChassisController::init(hardware_interface::EffortJointInterface *effort_joint_interface,ros::NodeHandle &root_nh, ros::NodeHandle &controller_nh) 
+{
   // 获取关节句柄
   front_left_wheel_joint_ =
       effort_joint_interface->getHandle("left_front_wheel_joint");
@@ -77,7 +76,7 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   last_vx_ = last_vy_ = last_wz_ = 0.0;
   ax_actual_ = ay_actual_ = awz_actual_ = 0.0;
   
-  // 新增：获取功率控制参数
+  //获取功率控制参数
   max_total_power_ = controller_nh.param("max_total_power", 200.0);
   power_limit_enabled_ = controller_nh.param("power_limit_enabled", true);
   current_power_limit_ = max_total_power_;
@@ -89,11 +88,18 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   power_regeneration_ = 0.0;
   power_limited_ = false;
   
+  // 初始化轮子状态变量
+  for (int i = 0; i < 4; ++i) {
+    wheel_steering_angle_[i] = 0.0;
+    wheel_speed_[i] = 0.0;
+    wheel_torque_[i] = 0.0;
+  }
+  
   // 初始化PID控制器
   double pivot_p, pivot_i, pivot_d;
-  controller_nh.param("pivot_p", pivot_p, 5.0);
+  controller_nh.param("pivot_p", pivot_p, 1.0);
   controller_nh.param("pivot_i", pivot_i, 0.0);
-  controller_nh.param("pivot_d", pivot_d, 0.1);
+  controller_nh.param("pivot_d", pivot_d, 0.0);
   
   pid_lf_.initPid(pivot_p, pivot_i, pivot_d, 0.0, 0.0);
   pid_rf_.initPid(pivot_p, pivot_i, pivot_d, 0.0, 0.0);
@@ -156,43 +162,48 @@ bool SentryChassisController::init(hardware_interface::EffortJointInterface *eff
   // 发布加速度话题
   accel_pub_ = nh.advertise<geometry_msgs::Accel>("chassis_acceleration", 50);
   
-  // 新增：发布功率相关话题
+  //发布功率相关话题
   total_power_pub_ = nh.advertise<std_msgs::Float64>("chassis_power_total", 50);
   consumption_power_pub_ = nh.advertise<std_msgs::Float64>("chassis_power_consumption", 50);
   regeneration_power_pub_ = nh.advertise<std_msgs::Float64>("chassis_power_regeneration", 50);
   power_limit_pub_ = nh.advertise<std_msgs::Float64>("chassis_power_limit", 50);
   power_limited_pub_ = nh.advertise<std_msgs::Bool>("chassis_power_limited", 50);
+  
+  //发布轮子状态话题
+  wheel_state_pub_ = nh.advertise<sentry_chassis_controller::WheelState>("wheel_states", 50);
 
   // 初始化TF广播器
   if (publish_tf_) {
     tf_broadcaster_.reset(new tf::TransformBroadcaster());
   }
 
-  ROS_INFO("SentryChassisController initialized: world_vel_mode = %s, self_lock_enabled = %s", 
-           world_vel_mode_ ? "true" : "false", enable_self_lock_ ? "true" : "false");
-  ROS_INFO("Acceleration limits: linear=%.2f m/s^2, angular=%.2f rad/s^2", 
-           max_linear_acceleration_, max_angular_acceleration_);
-  ROS_INFO("Power control: max_power=%.1fW, enabled=%s", 
-           max_total_power_, power_limit_enabled_ ? "true" : "false");
-
   return true;
 }
 
 bool SentryChassisController::transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, geometry_msgs::Twist& base_vel) {
   try {
-    tf::StampedTransform transform;
-    tf_listener_->lookupTransform(world_frame_id_, base_frame_id_, ros::Time(0), transform);
+    // 创建几何消息向量
+    geometry_msgs::Vector3Stamped world_vel_vec;//将速度从世界坐标系转换到底盘坐标系
+    geometry_msgs::Vector3Stamped base_vel_vec;
     
-    double yaw = tf::getYaw(transform.getRotation());
+    world_vel_vec.header.stamp = ros::Time::now();
+    world_vel_vec.header.frame_id = world_frame_id_;
+    world_vel_vec.vector.x = world_vel.linear.x;
+    world_vel_vec.vector.y = world_vel.linear.y;
+    world_vel_vec.vector.z = world_vel.linear.z;
     
-    base_vel.linear.x = world_vel.linear.x * cos(yaw) + world_vel.linear.y * sin(yaw);
-    base_vel.linear.y = -world_vel.linear.x * sin(yaw) + world_vel.linear.y * cos(yaw);
-    base_vel.angular.z = world_vel.angular.z;
+    // 使用 transformVector 进行坐标变换
+    tf_listener_->transformVector(base_frame_id_, world_vel_vec, base_vel_vec);
+    
+    base_vel.linear.x = base_vel_vec.vector.x;
+    base_vel.linear.y = base_vel_vec.vector.y;
+    base_vel.linear.z = base_vel_vec.vector.z;
+    base_vel.angular.z = world_vel.angular.z;  // 角速度保持不变
     
     return true;
   }
   catch (tf::TransformException &ex) {
-    ROS_WARN_THROTTLE(1.0, "TF transform failed: %s", ex.what());
+    //ROS_WARN_THROTTLE(1.0, "TF transform failed: %s", ex.what());
     return false;
   }
 }
@@ -229,9 +240,17 @@ void SentryChassisController::starting(const ros::Time& time) {
   
   // 重置功率限制为最大值
   current_power_limit_ = max_total_power_;
+  
+  // 初始化轮子状态
+  for (int i = 0; i < 4; ++i) {
+    wheel_steering_angle_[i] = 0.0;
+    wheel_speed_[i] = 0.0;
+    wheel_torque_[i] = 0.0;
+  }
 }
 
-void SentryChassisController::stopping(const ros::Time& time) {
+void SentryChassisController::stopping(const ros::Time& time) 
+{
   // 停止时先进入自锁模式
   if (enable_self_lock_) {
     enterSelfLockMode();
@@ -276,20 +295,14 @@ void SentryChassisController::computeWheelCommandsForSelfLock() {
   double L = wheel_base_ / 2.0;
   double W = wheel_track_ / 2.0;
   
-  // 前左轮：指向中心的角度 = atan2(从轮子指向中心的向量)
-  // 从轮子指向中心的向量 = (-L, -W)
   pivot_cmd_[0] = atan2(-W, -L);
   
-  // 前右轮：向量 = (-L, W)
   pivot_cmd_[1] = atan2(W, -L);
   
-  // 后左轮：向量 = (L, -W)
   pivot_cmd_[2] = atan2(-W, L);
   
-  // 后右轮：向量 = (L, W)
   pivot_cmd_[3] = atan2(W, L);
   
-  // 稍微向内增加一个角度，使轮子更内扣
   for (int i = 0; i < 4; ++i) {
     // 使轮子稍微更向内扣，增加自锁效果
     pivot_cmd_[i] += self_lock_angle_;
@@ -370,7 +383,8 @@ void SentryChassisController::cmdVelCallback(const geometry_msgs::Twist::ConstPt
     double dvy = target_vy - last_vy_;
     double dv = sqrt(dvx*dvx + dvy*dvy);
     
-    if (dv > max_dv_linear) {
+    if (dv > max_dv_linear)//超速处理 
+    {
       double scale = max_dv_linear / dv;
       dvx *= scale;
       dvy *= scale;
@@ -410,10 +424,9 @@ void SentryChassisController::cmdVelCallback(const geometry_msgs::Twist::ConstPt
 }
 
 // 应用功率限制
-void SentryChassisController::applyPowerLimits(double &torque_fl, double &torque_fr, 
-                                              double &torque_bl, double &torque_br,
-                                              const double &vel_fl, const double &vel_fr,
-                                              const double &vel_bl, const double &vel_br) {
+void SentryChassisController::applyPowerLimits(double &torque_fl, double &torque_fr, double &torque_bl, double &torque_br,const double &vel_fl, const double &vel_fr,
+        const double &vel_bl, const double &vel_br) 
+{
   
   if (!power_limit_enabled_ || current_power_limit_ <= 0) {
     return;  // 功率限制未启用
@@ -536,6 +549,58 @@ void SentryChassisController::computeAndPublishPower(const ros::Time &time, cons
   last_power_time_ = time;
 }
 
+// 计算并发布轮子状态信息
+void SentryChassisController::computeAndPublishWheelStates(const ros::Time &time, const ros::Duration &period) 
+{
+  // 获取轮子实际状态
+  wheel_steering_angle_[0] = front_left_pivot_joint_.getPosition();
+  wheel_steering_angle_[1] = front_right_pivot_joint_.getPosition();
+  wheel_steering_angle_[2] = back_left_pivot_joint_.getPosition();
+  wheel_steering_angle_[3] = back_right_pivot_joint_.getPosition();
+  
+  wheel_speed_[0] = front_left_wheel_joint_.getVelocity();
+  wheel_speed_[1] = front_right_wheel_joint_.getVelocity();
+  wheel_speed_[2] = back_left_wheel_joint_.getVelocity();
+  wheel_speed_[3] = back_right_wheel_joint_.getVelocity();
+  
+  wheel_torque_[0] = front_left_wheel_joint_.getCommand();
+  wheel_torque_[1] = front_right_wheel_joint_.getCommand();
+  wheel_torque_[2] = back_left_wheel_joint_.getCommand();
+  wheel_torque_[3] = back_right_wheel_joint_.getCommand();
+  
+  // 创建并发布轮子状态消息
+  sentry_chassis_controller::WheelState wheel_state_msg;
+  wheel_state_msg.header.stamp = time;
+  wheel_state_msg.header.frame_id = base_frame_id_;
+  
+  // 填充转向角度
+  for (int i = 0; i < 4; ++i) {
+    wheel_state_msg.steering_angle[i] = wheel_steering_angle_[i];
+    wheel_state_msg.wheel_speed[i] = wheel_speed_[i];
+    wheel_state_msg.wheel_velocity[i] = wheel_speed_[i] * wheel_radius_;  // 转换为线速度
+    wheel_state_msg.wheel_torque[i] = wheel_torque_[i];
+    // 电流可以通过扭矩计算）
+    wheel_state_msg.wheel_current[i] = wheel_torque_[i] * 0.5;  //简单估算，0.5是扭矩常数
+  }
+  
+  wheel_state_pub_.publish(wheel_state_msg);
+  
+  // 在debug模式下打印轮子状态
+  if (debug_print_) {
+    ROS_INFO_THROTTLE(2.0, 
+        "Wheel States - FL(angle: %.1f°, speed: %.2frad/s, torque: %.2fNm) "
+        "FR(angle: %.1f°, speed: %.2frad/s, torque: %.2fNm)",
+        wheel_steering_angle_[0] * 180.0/M_PI, wheel_speed_[0], wheel_torque_[0],
+        wheel_steering_angle_[1] * 180.0/M_PI, wheel_speed_[1], wheel_torque_[1]);
+    
+    ROS_INFO_THROTTLE(2.0, 
+        "Wheel States - BL(angle: %.1f°, speed: %.2frad/s, torque: %.2fNm) "
+        "BR(angle: %.1f°, speed: %.2frad/s, torque: %.2fNm)",
+        wheel_steering_angle_[2] * 180.0/M_PI, wheel_speed_[2], wheel_torque_[2],
+        wheel_steering_angle_[3] * 180.0/M_PI, wheel_speed_[3], wheel_torque_[3]);
+  }
+}
+
 void SentryChassisController::computeWheelCommands(double vx, double vy, double wz) {
   // 全向移动底盘逆运动学计算
   double L = wheel_base_ / 2.0;
@@ -600,7 +665,8 @@ void SentryChassisController::computeWheelCommands(double vx, double vy, double 
   }
 }
 
-void SentryChassisController::computeOdometry(const ros::Time &time, const ros::Duration &period) {
+void SentryChassisController::computeOdometry(const ros::Time &time, const ros::Duration &period) //里程计实现
+{
   // 获取轮子的实际角速度
   double wheel_vel[4] = {
     front_left_wheel_joint_.getVelocity(),
@@ -632,6 +698,8 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     vy_wheel[i] = wheel_linear_vel[i] * sin(pivot_angle[i]);
   }
   
+
+  //直接平均法计算底盘速度
   vx_actual_ = (vx_wheel[0] + vx_wheel[1] + vx_wheel[2] + vx_wheel[3]) / 4.0;
   vy_actual_ = (vy_wheel[0] + vy_wheel[1] + vy_wheel[2] + vy_wheel[3]) / 4.0;
   
@@ -659,8 +727,7 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
         break;
     }
     
-    double wz_contrib = ((wheel_vx - vx_actual_) * (-wheel_y) + 
-                        (wheel_vy - vy_actual_) * wheel_x) / (wheel_x * wheel_x + wheel_y * wheel_y);
+    double wz_contrib = ((wheel_vx - vx_actual_) * (-wheel_y) + (wheel_vy - vy_actual_) * wheel_x) / (wheel_x * wheel_x + wheel_y * wheel_y);
     
     if (!std::isnan(wz_contrib) && !std::isinf(wz_contrib)) {
       sum_wz += wz_contrib;
@@ -697,7 +764,7 @@ void SentryChassisController::computeOdometry(const ros::Time &time, const ros::
     odom.pose.pose.position.z = 0.0;
     
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta_);
-    odom.pose.pose.orientation = odom_quat;
+    odom.pose.pose.orientation = odom_quat;//获取四元数
     
     odom.twist.twist.linear.x = vx_actual_;
     odom.twist.twist.linear.y = vy_actual_;
@@ -858,6 +925,9 @@ void SentryChassisController::update(const ros::Time &time, const ros::Duration 
   
   // 计算并发布功率信息
   computeAndPublishPower(time, period);
+  
+  //计算并发布轮子状态
+  computeAndPublishWheelStates(time, period);
 }
 
 PLUGINLIB_EXPORT_CLASS(sentry_chassis_controller::SentryChassisController, controller_interface::ControllerBase)

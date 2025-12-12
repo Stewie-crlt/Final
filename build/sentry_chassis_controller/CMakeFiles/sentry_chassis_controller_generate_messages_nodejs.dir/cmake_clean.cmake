@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/stewie/Final/devel/.private/sentry_chassis_controller/share/gennodejs/ros/sentry_chassis_controller/msg/ChassisState.js"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/share/gennodejs/ros/sentry_chassis_controller/msg/WheelState.js"
   "CMakeFiles/sentry_chassis_controller_generate_messages_nodejs"
 )
 

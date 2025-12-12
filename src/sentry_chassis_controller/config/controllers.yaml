@@ -18,7 +18,7 @@ sentry_chassis_controller:
   base_frame_id: "base_link"
   
   # 世界坐标系速度控制参数
-  world_vel_mode: true
+  world_vel_mode: false
   world_frame_id: "odom"
   
   # 自锁参数
@@ -27,11 +27,11 @@ sentry_chassis_controller:
   self_lock_angle: 0.785
   
   # 加速度限制参数
-  max_linear_acceleration: 2.0
+  max_linear_acceleration: 3
   max_angular_acceleration: 3.0
   
-  # 功率控制参数（不支持动态调参）
-  max_total_power: 2           # 最大总功率 (W)
+  # 功率控制参数
+  max_total_power: 200           # 最大总功率 (W)
   power_limit_enabled: true        # 启用功率限制
   power_filter_time_constant: 0.1  # 功率滤波时间常数
 

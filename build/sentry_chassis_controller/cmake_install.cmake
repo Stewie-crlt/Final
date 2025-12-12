@@ -144,7 +144,7 @@ file(INSTALL DESTINATION "/home/stewie/Final/install" TYPE FILE FILES "/home/ste
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sentry_chassis_controller/msg" TYPE FILE FILES "/home/stewie/Final/src/sentry_chassis_controller/msg/ChassisState.msg")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sentry_chassis_controller/msg" TYPE FILE FILES "/home/stewie/Final/src/sentry_chassis_controller/msg/WheelState.msg")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)

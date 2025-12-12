@@ -4,7 +4,7 @@ group.0 {
 name=Dynamically Reconfigurable Parameters
 desc=See the [[dynamic_reconfigure]] package for details on dynamically reconfigurable parameters.
 0.name= ~pivot_p
-0.default= 5.0
+0.default= 3.0
 0.type= double
 0.desc=Pivot P gain Range: 0.0 to 100.0
 1.name= ~pivot_i

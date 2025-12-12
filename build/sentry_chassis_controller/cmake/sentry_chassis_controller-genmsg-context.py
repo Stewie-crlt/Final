@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/home/stewie/Final/src/sentry_chassis_controller/msg/ChassisState.msg"
+messages_str = "/home/stewie/Final/src/sentry_chassis_controller/msg/WheelState.msg"
 services_str = ""
 pkg_name = "sentry_chassis_controller"
 dependencies_str = "std_msgs"

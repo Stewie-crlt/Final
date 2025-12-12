@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/stewie/Final/devel/.private/sentry_chassis_controller/include/sentry_chassis_controller/ChassisState.h"
+  "/home/stewie/Final/devel/.private/sentry_chassis_controller/include/sentry_chassis_controller/WheelState.h"
   "CMakeFiles/sentry_chassis_controller_generate_messages_cpp"
 )
 

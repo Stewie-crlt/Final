@@ -16,6 +16,8 @@
 #include <queue>
 #include <dynamic_reconfigure/server.h>
 #include "sentry_chassis_controller/PIDConfig.h"
+#include "sentry_chassis_controller/WheelState.h"
+
 
 namespace sentry_chassis_controller {
 
@@ -39,10 +41,8 @@ class SentryChassisController : public controller_interface::Controller<hardware
   void computeOdometry(const ros::Time &time, const ros::Duration &period);
   void computeAndPublishAcceleration(const ros::Time &time, const ros::Duration &period);
   void computeAndPublishPower(const ros::Time &time, const ros::Duration &period);
-  void applyPowerLimits(double &torque_fl, double &torque_fr, 
-                        double &torque_bl, double &torque_br, 
-                        const double &vel_fl, const double &vel_fr,
-                        const double &vel_bl, const double &vel_br);
+  void computeAndPublishWheelStates(const ros::Time &time, const ros::Duration &period);
+  void applyPowerLimits(double &torque_fl, double &torque_fr, double &torque_bl, double &torque_br, const double &vel_fl, const double &vel_fr,const double &vel_bl, const double &vel_br);
   bool transformVelocityToBaseFrame(const geometry_msgs::Twist& world_vel, 
                                    geometry_msgs::Twist& base_vel);
   
@@ -64,6 +64,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   ros::Publisher regeneration_power_pub_; // 再生功率发布器
   ros::Publisher power_limit_pub_;       // 功率限制发布器
   ros::Publisher power_limited_pub_;     // 功率限制状态发布器
+  ros::Publisher wheel_state_pub_;       // 轮子状态发布器
   
   std::shared_ptr<tf::TransformBroadcaster> tf_broadcaster_;
   std::unique_ptr<tf::TransformListener> tf_listener_;
@@ -76,6 +77,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   double wheel_track_;
   double wheel_base_;
   double wheel_radius_;
+  double gear_ratio_;                    // 减速比（电机:轮子）
   double cmd_vel_timeout_;
   double max_wheel_speed_;
   bool debug_print_;
@@ -87,7 +89,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   bool world_vel_mode_;
   std::string world_frame_id_;
   
-  // 功率控制参数（从配置文件读取，不支持动态调参）
+  // 功率控制参数
   double max_total_power_;
   bool power_limit_enabled_;
   double current_power_limit_;
@@ -121,7 +123,7 @@ class SentryChassisController : public controller_interface::Controller<hardware
   std::mutex power_mutex_;
   
   double pivot_cmd_[4];
-  double wheel_cmd_[4];
+  double wheel_cmd_[4];  // 存储电机转速命令
   
   double last_valid_pivot_cmd_[4];
   
@@ -130,9 +132,14 @@ class SentryChassisController : public controller_interface::Controller<hardware
   
   double ax_actual_, ay_actual_, awz_actual_;
   
+  // 轮子状态存储
+  double wheel_steering_angle_[4];  // 轮子转向角度（弧度）
+  double wheel_speed_[4];           // 轮子转速（rad/s）
+  double wheel_torque_[4];          // 轮子扭矩（Nm）
+  
   control_toolbox::Pid pid_lf_, pid_rf_, pid_lb_, pid_rb_;
   control_toolbox::Pid pid_lf_wheel_, pid_rf_wheel_, pid_lb_wheel_, pid_rb_wheel_;
 };
-}// namespace sentry_chassis_controller
+}
 
 #endif //SENTRY_CHASSIS_CONTROLLER_SENTRY_CHASSIS_CONTROLLER_H

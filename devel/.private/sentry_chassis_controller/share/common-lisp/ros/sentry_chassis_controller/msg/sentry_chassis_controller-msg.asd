@@ -5,6 +5,6 @@
   :depends-on (:roslisp-msg-protocol :roslisp-utils :std_msgs-msg
 )
   :components ((:file "_package")
-    (:file "ChassisState" :depends-on ("_package_ChassisState"))
-    (:file "_package_ChassisState" :depends-on ("_package"))
+    (:file "WheelState" :depends-on ("_package_WheelState"))
+    (:file "_package_WheelState" :depends-on ("_package"))
   ))

@@ -3,6 +3,7 @@
 
 CMakeFiles/sentry_chassis_controller.dir/src/sentry_chassis_controller.cpp.o
  /home/stewie/Final/devel/.private/sentry_chassis_controller/include/sentry_chassis_controller/PIDConfig.h
+ /home/stewie/Final/devel/.private/sentry_chassis_controller/include/sentry_chassis_controller/WheelState.h
  /home/stewie/Final/src/sentry_chassis_controller/include/sentry_chassis_controller/sentry_chassis_controller.h
  /home/stewie/Final/src/sentry_chassis_controller/src/sentry_chassis_controller.cpp
  /opt/ros/noetic/include/class_loader/class_loader.hpp

@@ -1,8 +1,8 @@
 
 "use strict";
 
-let ChassisState = require('./ChassisState.js');
+let WheelState = require('./WheelState.js');
 
 module.exports = {
-  ChassisState: ChassisState,
+  WheelState: WheelState,
 };

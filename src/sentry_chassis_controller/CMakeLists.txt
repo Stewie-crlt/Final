@@ -27,7 +27,7 @@ find_package(Eigen3 REQUIRED)
 # 添加消息生成
 add_message_files(
   FILES
-  ChassisState.msg
+  WheelState.msg
 )
 
 # 生成动态重配置文件

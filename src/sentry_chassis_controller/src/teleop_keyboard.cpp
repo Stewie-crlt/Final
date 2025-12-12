@@ -7,8 +7,8 @@
 #include <sys/select.h>
 
 
-#define KEYCODE_SPACE 0x20  // Space key
-#define KEYCODE_ESC 0x1B    // ESC key
+#define KEYCODE_SPACE 0x20  // Space
+#define KEYCODE_ESC 0x1B    // ESC
 
 class TeleopKeyboard
 {
@@ -82,7 +82,7 @@ void TeleopKeyboard::keyLoop()
     while (ros::ok())
     {
         tv.tv_sec = 0;
-        tv.tv_usec = 100000; // 100ms timeout
+        tv.tv_usec = 100000; 
         
         FD_ZERO(&readfds);
         FD_SET(kfd, &readfds);

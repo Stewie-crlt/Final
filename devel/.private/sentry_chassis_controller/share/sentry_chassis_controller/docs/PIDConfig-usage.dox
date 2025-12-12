@@ -1,7 +1,7 @@
 \subsubsection usage Usage
 \verbatim
 <node name="sentry_chassis_controller" pkg="sentry_chassis_controller" type="sentry_chassis_controller">
-  <param name="pivot_p" type="double" value="5.0" />
+  <param name="pivot_p" type="double" value="3.0" />
   <param name="pivot_i" type="double" value="0.0" />
   <param name="pivot_d" type="double" value="0.1" />
   <param name="wheel_p" type="double" value="2.0" />

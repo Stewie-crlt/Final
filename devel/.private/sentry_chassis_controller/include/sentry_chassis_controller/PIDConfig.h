@@ -418,7 +418,7 @@ PIDConfig::GroupDescription<PIDConfig::DEFAULT, PIDConfig> Default("Default", ""
 //#line 292 "/opt/ros/noetic/lib/python3/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       __max__.pivot_p = 100.0;
 //#line 292 "/opt/ros/noetic/lib/python3/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
-      __default__.pivot_p = 5.0;
+      __default__.pivot_p = 3.0;
 //#line 292 "/opt/ros/noetic/lib/python3/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"
       Default.abstract_parameters.push_back(PIDConfig::AbstractParamDescriptionConstPtr(new PIDConfig::ParamDescription<double>("pivot_p", "double", 0, "Pivot P gain", "", &PIDConfig::pivot_p)));
 //#line 292 "/opt/ros/noetic/lib/python3/dist-packages/dynamic_reconfigure/parameter_generator_catkin.py"

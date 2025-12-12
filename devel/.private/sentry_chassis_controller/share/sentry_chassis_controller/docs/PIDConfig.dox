@@ -2,7 +2,7 @@
 
 Reads and maintains the following parameters on the ROS server
 
-- \b "~pivot_p" : \b [double] Pivot P gain min: 0.0, default: 5.0, max: 100.0
+- \b "~pivot_p" : \b [double] Pivot P gain min: 0.0, default: 3.0, max: 100.0
 - \b "~pivot_i" : \b [double] Pivot I gain min: 0.0, default: 0.0, max: 10.0
 - \b "~pivot_d" : \b [double] Pivot D gain min: 0.0, default: 0.1, max: 100.0
 - \b "~wheel_p" : \b [double] Wheel P gain min: 0.0, default: 2.0, max: 100.0
